@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--最左上角的标题，一个简单的TextView-->
+    <TextView
+        android:id="@+id/id_tv_tableName"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="name" />
+
+    <!--横向表头的布局，用MyHorizontalScrollView包裹-->
+    <sysu.zyb.panellistlibrary.MyHorizontalScrollView
+        android:id="@+id/id_mhsv_rowTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/id_tv_tableName"
+        android:scrollbars="none">
+
+        <include layout="@layout/item_row" />
+
+    </sysu.zyb.panellistlibrary.MyHorizontalScrollView>
+
+    <!--纵向表头的列表，一个简单的ListView-->
+    <ListView
+        android:id="@+id/id_lv_columnTitle"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/id_tv_tableName"
+        android:scrollbars="none" />
+
+    <!--内容的布局，用MyHorizontalScrollView包裹-->
+    <sysu.zyb.panellistlibrary.MyHorizontalScrollView
+        android:id="@+id/id_mhsv_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/id_lv_columnTitle"
+        android:layout_below="@id/id_mhsv_rowTitle">
+
+        <ListView
+            android:id="@+id/id_lv_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </sysu.zyb.panellistlibrary.MyHorizontalScrollView>
+
+</RelativeLayout>
