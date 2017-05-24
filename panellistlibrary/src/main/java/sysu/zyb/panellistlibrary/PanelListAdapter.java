@@ -95,22 +95,27 @@ public class PanelListAdapter {
         public void onScrollStateChanged(AbsListView view, int scrollState) {
             if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_TOUCH_SCROLL){
                 View subView = view.getChildAt(0);//?
-                if (subView != null){
+                if (subView != null&& view == lv_content){
+                    int top = subView.getTop();
+                    int position = view.getFirstVisiblePosition();
+                    lv_column.setSelectionFromTop(position,top);
+                } else if (subView != null&& view == lv_column){
                     int top = subView.getTop();
                     int position = view.getFirstVisiblePosition();
                     lv_content.setSelectionFromTop(position,top);
-                    lv_column.setSelectionFromTop(position,top);
                 }
             }
         }
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            View subView = view.getChildAt(0);//??
-            if (subView != null){
+            View subView = view.getChildAt(0);
+            if (subView != null && view == lv_content){
+                int top = subView.getTop();
+                lv_column.setSelectionFromTop(firstVisibleItem,top);
+            } else if (subView != null&& view == lv_column){
                 int top = subView.getTop();
                 lv_content.setSelectionFromTop(firstVisibleItem,top);
-                lv_column.setSelectionFromTop(firstVisibleItem,top);
             }
         }
     }
