@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/id_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="已选择："/>
+
+    <TextView
+        android:id="@+id/id_tv_selectedCount"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        tools:text="1"/>
+</LinearLayout>

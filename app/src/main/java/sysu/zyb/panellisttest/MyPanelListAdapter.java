@@ -1,11 +1,13 @@
 package sysu.zyb.panellisttest;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -108,7 +110,6 @@ public class MyPanelListAdapter extends PanelListAdapter {
             this.resourceId = resourceId;
         }
 
-
         @Override
         public int getCount() {
             return contentList.size();
@@ -137,6 +138,12 @@ public class MyPanelListAdapter extends PanelListAdapter {
             viewHolder.tv_05.setText(data.get("5"));
             viewHolder.tv_06.setText(data.get("6"));
             viewHolder.tv_07.setText(data.get("7"));
+
+            if (lv_content.isItemChecked(position)){
+                view.setBackgroundColor(context.getResources().getColor(R.color.colorSelected));
+            } else {
+                view.setBackgroundColor(context.getResources().getColor(R.color.colorDeselected));
+            }
 
             return view;
         }
