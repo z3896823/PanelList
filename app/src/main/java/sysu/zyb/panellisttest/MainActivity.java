@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         initView();
         initDataList();
 
-
         MyPanelListAdapter adapter = new MyPanelListAdapter(this, mhsv_row, mhsv_content, lv_columnTitle, lv_content,
                 R.layout.item_column, R.layout.item_content, columnList, contentList);
         adapter.initAdapter();
