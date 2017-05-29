@@ -1,52 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<sysu.zyb.panellistlibrary.PanelListLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/id_pl_root">
 
-    <!--最左上角的标题，一个简单的TextView-->
-    <TextView
-        android:id="@+id/id_tv_tableName"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:text="name"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
 
-    <!--横向表头的布局，用MyHorizontalScrollView包裹-->
-    <sysu.zyb.panellistlibrary.MyHorizontalScrollView
-        android:id="@+id/id_mhsv_rowTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/id_tv_tableName"
-        android:scrollbars="none">
-
-        <include layout="@layout/item_row" />
-
-    </sysu.zyb.panellistlibrary.MyHorizontalScrollView>
-
-    <!--纵向表头的列表，一个简单的ListView,取消滑动条-->
     <ListView
-        android:id="@+id/id_lv_columnTitle"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:layout_below="@id/id_tv_tableName"
-        android:scrollbars="none"
-        android:fastScrollEnabled="false"/>
-
-    <!--内容的布局，用MyHorizontalScrollView包裹-->
-    <sysu.zyb.panellistlibrary.MyHorizontalScrollView
-        android:id="@+id/id_mhsv_content"
+        android:id="@+id/id_lv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toRightOf="@id/id_lv_columnTitle"
-        android:layout_below="@id/id_mhsv_rowTitle">
+        android:fastScrollEnabled="false" />
 
-        <ListView
-            android:id="@+id/id_lv_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fastScrollEnabled="false"/>
-    </sysu.zyb.panellistlibrary.MyHorizontalScrollView>
-
-</RelativeLayout>
+</sysu.zyb.panellistlibrary.PanelListLayout>

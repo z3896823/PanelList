@@ -1,14 +1,13 @@
 package sysu.zyb.panellisttest;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import sysu.zyb.panellistlibrary.MyHorizontalScrollView;
 import sysu.zyb.panellistlibrary.PanelListAdapter;
+import sysu.zyb.panellistlibrary.PanelListLayout;
 
 /**
  * <pre>
@@ -34,48 +33,20 @@ public class MyPanelListAdapter extends PanelListAdapter {
 
     private Context context;
 
-    /**
-     * 两个垂直滑动ListView
-     */
-    private ListView lv_column;
     private ListView lv_content;
-
-    /**
-     * 两个垂直滑动ListView的子布局
-     */
-    private int columnResourceId;
     private int contentResourceId;
-
-    /**
-     * 两个ListView的数据
-     */
-    private List<String> columnTitleList = new ArrayList<>();
     private List<Map<String, String>> contentList = new ArrayList<>();
 
     /**
      * constructor
      *
-     * @param context  上下文
-     * @param mhsv_row  横向表头的外部布局
-     * @param mhsv_content  内容的外部布局
-     * @param lv_column  纵向表头的ListView
-     * @param lv_content  内容的ListView
-     * @param columnResourceId  纵向表头的子布局
-     * @param contentResourceId  内容的子布局
-     * @param columnTitleList  纵向表头的数据列表
-     * @param contentList  内容的数据列表
      */
-    public MyPanelListAdapter(Context context, MyHorizontalScrollView mhsv_row, MyHorizontalScrollView mhsv_content,
-                              ListView lv_column, ListView lv_content,
-                              int columnResourceId, int contentResourceId,
-                              List<String> columnTitleList, List<Map<String, String>> contentList) {
-        super(context, mhsv_row, mhsv_content, lv_column, lv_content);
+    public MyPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content,
+                              int contentResourceId, List<Map<String,String>> contentList) {
+        super(context, pl_root, lv_content);
         this.context = context;
-        this.lv_column = lv_column;
         this.lv_content = lv_content;
-        this.columnResourceId = columnResourceId;
         this.contentResourceId = contentResourceId;
-        this.columnTitleList = columnTitleList;
         this.contentList = contentList;
     }
 
@@ -86,14 +57,37 @@ public class MyPanelListAdapter extends PanelListAdapter {
      */
     @Override
     public void initAdapter() {
-        super.initAdapter();//这里一定要先调用父类的方法
+
+        setTitle("test");//设置表的标题
+        setTitleHeight(150);//设置表标题的高
+        setTitleWidth(200);//设置表标题的宽
+        setRowDataList(getRowDataList());//设置横向表头的内容
 
         ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
         lv_content.setAdapter(contentAdapter);
 
-        //为简单说明问题，这里不再使用复杂的Adapter，开发者可以根据需要自行设计
-        ArrayAdapter<String> columnAdapter = new ArrayAdapter<>(context,columnResourceId,columnTitleList);
-        lv_column.setAdapter(columnAdapter);
+        super.initAdapter();//一定要在设置完后调用父类的方法
+    }
+
+    @Override
+    protected int getCount() {
+        return contentList.size();
+    }
+
+    /** 生成一份横向表头的内容
+     *
+     * @return List<String>
+     */
+    private List<String> getRowDataList(){
+        List<String> rowDataList = new ArrayList<>();
+        rowDataList.add("row1");
+        rowDataList.add("row2");
+        rowDataList.add("row3");
+        rowDataList.add("row4");
+        rowDataList.add("row5");
+        rowDataList.add("row6");
+        rowDataList.add("row7");
+        return rowDataList;
     }
 
     /**

@@ -22,18 +22,17 @@ import java.util.List;
 import java.util.Map;
 
 import sysu.zyb.panellistlibrary.MyHorizontalScrollView;
+import sysu.zyb.panellistlibrary.PanelListLayout;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    private PanelListLayout pl_root;
     private ListView lv_content;
-    private ListView lv_columnTitle;
 
-    private MyHorizontalScrollView mhsv_row;
-    private MyHorizontalScrollView mhsv_content;
 
-    List<String> columnList = new ArrayList<>();
-    List<Map<String ,String>> contentList = new ArrayList<>();
+    private List<String> columnList = new ArrayList<>();
+    private List<Map<String ,String>> contentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,20 +42,18 @@ public class MainActivity extends AppCompatActivity {
         initView();
         initDataList();
 
-        MyPanelListAdapter adapter = new MyPanelListAdapter(this, mhsv_row, mhsv_content, lv_columnTitle, lv_content,
-                R.layout.item_column, R.layout.item_content, columnList, contentList);
+        MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
         adapter.initAdapter();
+        Log.d("ybz", "onCreate: finished");
     }
 
     private void initView(){
-        mhsv_row = (MyHorizontalScrollView) findViewById(R.id.id_mhsv_rowTitle);
-        mhsv_content = (MyHorizontalScrollView) findViewById(R.id.id_mhsv_content);
 
+        pl_root = (PanelListLayout) findViewById(R.id.id_pl_root);
         lv_content = (ListView) findViewById(R.id.id_lv_content);
-        lv_columnTitle = (ListView) findViewById(R.id.id_lv_columnTitle);
 
-        lv_content.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        lv_content.setMultiChoiceModeListener(new MultiChoiceModeCallback());
+//        lv_content.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+//        lv_content.setMultiChoiceModeListener(new MultiChoiceModeCallback());
 
         lv_content.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
