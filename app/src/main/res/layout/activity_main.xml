@@ -10,6 +10,7 @@
         android:id="@+id/id_lv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fastScrollEnabled="false" />
+        android:fastScrollEnabled="false"
+        android:overScrollMode="never"/>
 
 </sysu.zyb.panellistlibrary.PanelListLayout>

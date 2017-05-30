@@ -42,7 +42,6 @@ public abstract class PanelListAdapter {
     private MyHorizontalScrollView mhsv_row;
     private MyHorizontalScrollView mhsv_content;
 
-
     /**
      * 整个页面的所有布局
      */
@@ -54,14 +53,13 @@ public abstract class PanelListAdapter {
     private LinearLayout ll_contentItem;//中间的内容部分的子布局
 
     /** 标题的宽和高,同时也是列表头的宽和列表头的高 */
-    private int titleWidth = 50;
-    private int titleHeight = 30;
-    private int columnItemHeight = 30;
+    private int titleWidth = 150;
+    private int titleHeight = 100;
+    private int columnItemHeight = 100;
 
     protected String title = "Title";
     private List<String> columnDataList;
     private List<String> rowDataList;
-
 
     private String columnColor = "#346cf1";//default color of column: blue
     private String titleColor = "#fdfdfd";//default color of title: white
@@ -127,7 +125,8 @@ public abstract class PanelListAdapter {
     /**
      * 设置纵向表头的内容
      *
-     * @param columnDataList data list of column layout, must be a List<String>
+     * @param columnDataList data list of column layout, must be a List<String>. if you don`t call
+     *                       this method, the default column list will be used
      */
     protected void setColumnDataList(List<String> columnDataList) {
         this.columnDataList = columnDataList;
@@ -208,19 +207,13 @@ public abstract class PanelListAdapter {
             return;
         }
 
-//        if (ll_contentItem == null){
-//            Log.e("PanelList", "the item view of content-ListView must be set");
-//            Log.e("PanelList", "if you don`t tell me what the content item looks like, how am I gonna" +
-//                    " be able to generate the row title that matches your content, baby?");
-//            return;
-//        }
-
         // clear root viewGroup
         pl_root.removeView(lv_content);
 
         // 1. title
         tv_title = new TextView(context);
         tv_title.setText(title);
+        tv_title.setGravity(Gravity.CENTER);
         tv_title.setBackgroundColor(Color.parseColor(titleColor));
         tv_title.setId(View.generateViewId());//设置一个随机id，这样可以保证不冲突
         RelativeLayout.LayoutParams lp_tv_title = new RelativeLayout.LayoutParams(titleWidth, titleHeight);
@@ -240,6 +233,7 @@ public abstract class PanelListAdapter {
         ll_row.setLayoutParams(lp);
         mhsv_row = new MyHorizontalScrollView(context);
         mhsv_row.setHorizontalScrollBarEnabled(false);
+        mhsv_row.setOverScrollMode(View.OVER_SCROLL_NEVER);//去除滑动到边缘时出现的阴影
         mhsv_row.addView(ll_row);//暂时先不给ll_row添加子view，等布局画出来了再添加
         mhsv_row.setId(View.generateViewId());
         RelativeLayout.LayoutParams lp_mhsv_row = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, titleHeight);
@@ -251,8 +245,8 @@ public abstract class PanelListAdapter {
             @Override
             public void run() {
                 ll_contentItem = (LinearLayout) lv_content.getChildAt(lv_content.getFirstVisiblePosition());
-                Log.d("ybz", "ll_contentItem width = " + ll_contentItem.getWidth());
-                Log.d("ybz", "ll_contentItem height = " + ll_contentItem.getHeight());
+//                Log.d("ybz", "ll_contentItem width = " + ll_contentItem.getWidth());
+//                Log.d("ybz", "ll_contentItem height = " + ll_contentItem.getHeight());
                 columnItemHeight = ll_contentItem.getChildAt(0).getHeight();
                 lv_column.setAdapter(getColumnAdapter());
                 initRowLayout();
@@ -271,6 +265,7 @@ public abstract class PanelListAdapter {
         // 4. content
         mhsv_content = new MyHorizontalScrollView(context);
         mhsv_content.addView(lv_content);
+        mhsv_content.setOverScrollMode(View.OVER_SCROLL_NEVER);//去除滑动到边缘时出现的阴影
         RelativeLayout.LayoutParams lp_mhsv_content = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp_mhsv_content.addRule(RelativeLayout.RIGHT_OF, lv_column.getId());
         lp_mhsv_content.addRule(RelativeLayout.BELOW, tv_title.getId());
@@ -415,6 +410,9 @@ public abstract class PanelListAdapter {
             }
 
             ((TextView)view).setText(columnDataList.get(position));
+            ((TextView)view).setTextSize(15);
+            view.setPadding(0,0,0,0);
+            ((TextView) view).setGravity(Gravity.CENTER);
 
             return view;
         }

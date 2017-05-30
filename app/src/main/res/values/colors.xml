@@ -8,4 +8,5 @@
     <color name="lv_multichoice_bg">#e4dac1</color>
     <color name="colorSelected">#e9c364</color>
     <color name="colorDeselected">#fdfdfd</color>
+    <color name="white">#fdfdfd</color>
 </resources>

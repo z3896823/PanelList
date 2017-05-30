@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView lv_content;
 
 
-    private List<String> columnList = new ArrayList<>();
+
     private List<Map<String ,String>> contentList = new ArrayList<>();
 
     @Override
@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
 
         MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
         adapter.initAdapter();
-        Log.d("ybz", "onCreate: finished");
     }
 
     private void initView(){
@@ -52,19 +51,24 @@ public class MainActivity extends AppCompatActivity {
         pl_root = (PanelListLayout) findViewById(R.id.id_pl_root);
         lv_content = (ListView) findViewById(R.id.id_lv_content);
 
-//        lv_content.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-//        lv_content.setMultiChoiceModeListener(new MultiChoiceModeCallback());
+        //设置listView为多选模式，长按自动触发
+        lv_content.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        lv_content.setMultiChoiceModeListener(new MultiChoiceModeCallback());
 
+        //listView的点击监听
         lv_content.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, columnList.get(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "你选中的position为："+position, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    /**
+     * 初始化content数据
+     */
     private void initDataList(){
-        for (int i = 0;i<1000;i++){
+        for (int i = 1;i<1001;i++){
             Map<String ,String> data = new HashMap<>();
             data.put("1","第"+i+"行第一个");
             data.put("2","第"+i+"行第二个");
@@ -74,10 +78,6 @@ public class MainActivity extends AppCompatActivity {
             data.put("6","第"+i+"行第六个");
             data.put("7","第"+i+"行第七个");
             contentList.add(data);
-        }
-
-        for (int i = 0;i<1000;i++){
-            columnList.add("表头"+i);
         }
     }
 
@@ -140,11 +140,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.id_menu_draw:
                     //draw
-                    long[] checkedIds = lv_content.getCheckedItemIds();
-                    Log.d("ybz", " 数组长度为：  "+checkedIds.length);
-                    for (int i = 0;i<checkedIds.length;i++){
-                        Log.d("ybz", "checked id = "+checkedIds[i]);
-                    }
                     SparseBooleanArray booleanArray = lv_content.getCheckedItemPositions();
                     Log.d("ybz", booleanArray.toString());
 
@@ -156,7 +151,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
+                    StringBuilder checkedItemString = new StringBuilder();
+                    for (int i = 0; i<checkedItemPositionList.size();i++){
+                        checkedItemString.append(checkedItemPositionList.get(i)+",");
+                    }
 
+                    Toast.makeText(MainActivity.this, "你选中的position有："+checkedItemString, Toast.LENGTH_SHORT).show();
                     break;
             }
             return true;

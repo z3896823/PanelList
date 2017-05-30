@@ -9,11 +9,13 @@
         android:id="@+id/id_tv_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="已选择："/>
+        android:text="已选择："
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/id_tv_selectedCount"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        tools:text="1"/>
+        tools:text="1"
+        android:textColor="@color/white"/>
 </LinearLayout>

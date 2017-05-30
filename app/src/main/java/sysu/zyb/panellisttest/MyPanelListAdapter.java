@@ -57,18 +57,23 @@ public class MyPanelListAdapter extends PanelListAdapter {
      */
     @Override
     public void initAdapter() {
-
         setTitle("test");//设置表的标题
-        setTitleHeight(150);//设置表标题的高
-        setTitleWidth(200);//设置表标题的宽
+        setTitleHeight(100);//设置表标题的高
+        setTitleWidth(150);//设置表标题的宽
         setRowDataList(getRowDataList());//设置横向表头的内容
 
+        // set自己写的contentAdapter
         ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
         lv_content.setAdapter(contentAdapter);
 
         super.initAdapter();//一定要在设置完后调用父类的方法
     }
 
+    /**
+     * 重写父类的该方法，返回数据的个数即可
+     *
+     * @return size of content
+     */
     @Override
     protected int getCount() {
         return contentList.size();
