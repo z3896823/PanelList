@@ -27,7 +27,7 @@ allprojects {
 Step 2. Add the dependency in your module gradle
 ```gradle
 dependencies {
-	        compile 'com.github.z3896823:PanelList:v1.0'
+	        compile 'com.github.z3896823:PanelList:v1.1'
 	}
 ```
 
