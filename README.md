@@ -6,6 +6,7 @@ PanelList is a simple library for displaying massive data.
 
 主要用于展示大量数据，如酒店订房数据，股票，实验数据等。
 
+![](https://github.com/z3896823/PanelList/blob/master/PanelList.gif)
 
 # 本库的不足和改进之处
 - 目前由于时间关系，封装程度不够，开发者使用上不够极致简单。请按照下面的示例配置自己的项目。
