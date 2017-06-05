@@ -61,9 +61,9 @@ public abstract class PanelListAdapter {
     private List<String> columnDataList;
     private List<String> rowDataList;
 
-    private String columnColor = "#346cf1";//default color of column: blue
-    private String titleColor = "#fdfdfd";//default color of title: white
-    private String rowColor = "#f9ba1d";//default color of title: yellow
+    private String columnColor = "#607D8B";//default color of column
+    private String titleColor = "#CFD8DC";//default color of title
+    private String rowColor = "#CDDC39";//default color of title
 
     private BaseAdapter columnAdapter;
 
@@ -213,6 +213,7 @@ public abstract class PanelListAdapter {
         // 1. title
         tv_title = new TextView(context);
         tv_title.setText(title);
+        tv_title.getPaint().setFakeBoldText(true);
         tv_title.setGravity(Gravity.CENTER);
         tv_title.setBackgroundColor(Color.parseColor(titleColor));
         tv_title.setId(View.generateViewId());//设置一个随机id，这样可以保证不冲突
@@ -258,6 +259,7 @@ public abstract class PanelListAdapter {
         lv_column.setBackgroundColor(Color.parseColor(columnColor));
         lv_column.setId(View.generateViewId());
         lv_column.setVerticalScrollBarEnabled(false);
+//        lv_column.setDivider(context.getResources().getDrawable(R.drawable.column_item_divider));
         RelativeLayout.LayoutParams lp_lv_column = new RelativeLayout.LayoutParams(titleWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         lp_lv_column.addRule(RelativeLayout.BELOW, tv_title.getId());
         pl_root.addView(lv_column, lp_lv_column);
@@ -285,7 +287,7 @@ public abstract class PanelListAdapter {
         }
 
         ll_row.setBackgroundColor(Color.parseColor(rowColor));
-        ll_row.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        ll_row.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE|LinearLayout.SHOW_DIVIDER_BEGINNING);
         ll_row.setDividerDrawable(context.getResources().getDrawable(R.drawable.row_item_divider));
 
         int rowCount = ll_contentItem.getChildCount();
@@ -293,6 +295,7 @@ public abstract class PanelListAdapter {
             TextView contentItem = (TextView) ll_contentItem.getChildAt(i);
             TextView rowItem = new TextView(context);
             rowItem.setText(rowDataList.get(i));//设置文字
+            rowItem.getPaint().setFakeBoldText(true);
             rowItem.setWidth(contentItem.getWidth());//设置宽度
             rowItem.setHeight(titleHeight);//设置高度
             rowItem.setGravity(Gravity.CENTER);
