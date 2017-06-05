@@ -6,11 +6,19 @@ PanelList is a simple library for displaying massive data.
 
 主要用于展示大量数据，如酒店订房数据，股票，实验数据等。
 
+【本库已应用于作者所在实验室的内部项目中，反馈良好。】
+
+【欢迎大家使用后提建议，有问题也欢迎提issue。如果觉得不错请star一下，这将是对我莫大的鼓励！谢谢~~】
+
 ![](https://github.com/z3896823/PanelList/blob/master/PanelList.gif)
 
 # What`s new
 v1.1版本相对初版进行了相对更高度的封装，大大降低了开发者的使用门槛，使得开发者可以像用ListView一样使用PanelList。
 同时，增加了很多个性化接口，供开发者按照自己的需求改变PanelList的效果。
+
+使用本库时，开发者只需要关心中间content部分的adapter怎么写，其余的表头部分只需要将数据传进去就可以了。剩下的数据填充及同步滑动部分将由本库自动完成。
+而且表头每个item的高度（纵向表头）和宽度（横向表头）将跟随开发者content部分的item大小自动适应。
+
 
 # Using PanelList in your application
 Step 1. Add the JitPack repository to your build file
@@ -119,7 +127,7 @@ public class MyPanelListAdapter extends PanelListAdapter {
 ```
 
 
-### PS:多选暂时不属于本库的功能，未来会考虑封装进去。
+ PS:多选暂时不属于本库的功能，未来会考虑封装进去。
 
 
 
