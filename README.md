@@ -188,10 +188,9 @@ public class MyPanelListAdapter extends PanelListAdapter {
 ```
 
 
- PS:多选暂时不属于本库的功能，如果有人需要的话请联系我，人多的话我抽时间封装一下。
- email：hbdxzyb@hotmail.com
+虽然本库目前使用的人不多，但是真心感谢各位的支持！如果有什么你想要的功能这里面没有，请尽管使用下面的邮箱联系我！我会尽自己绵薄之力，和大家一起将本库完善！
 
-
+email：hbdxzyb@hotmail.com
 
 
 
