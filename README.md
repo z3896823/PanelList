@@ -155,35 +155,35 @@ public class MyPanelListAdapter extends PanelListAdapter {
      *
      * @param rowDataList data list of row layout, must be a List<String>
      */
-    protected void setRowDataList(List<String> rowDataList);
+    setRowDataList(List<String> rowDataList);
 
     /**
      * 设置纵向表头的内容
      *
      * @param columnDataList data list of column layout, must be a List<String>. if you don`t call this method, the default column list will be used
      */
-    protected void setColumnDataList(List<String> columnDataList);
+    setColumnDataList(List<String> columnDataList);
 
     /**
      * 设置纵向表头的背景色
      *
      * @param columnColor background color of column
      */
-    protected void setColumnColor(String columnColor);
+    setColumnColor(String columnColor);
 
     /**
      * 设置标题的背景色
      *
      * @param titleColor background color of title
      */
-    protected void setTitleColor(String titleColor);
+    setTitleColor(String titleColor);
 
     /**
      * 设置横向表头的背景色
      *
      * @param rowColor background color of row
      */
-    protected void setRowColor(String rowColor);
+    setRowColor(String rowColor);
 
 ```
 
