@@ -104,7 +104,11 @@ public class MyPanelListAdapter extends PanelListAdapter {
         ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
         lv_content.setAdapter(contentAdapter);
 
+<<<<<<< HEAD
+        super.initAdapter();//一定要在设置完**后**调用父类的方法
+=======
         super.initAdapter();//一定要在设置完后调用父类的方法
+>>>>>>> 0b5e26fca48376416524dd6bbe2f73869e85db2d
     }
 
     /**
@@ -126,8 +130,71 @@ public class MyPanelListAdapter extends PanelListAdapter {
 }
 ```
 
+# APIs
 
- PS:多选暂时不属于本库的功能，未来会考虑封装进去。
+```java
+    /**
+     * 设置表的标题
+     *
+     * @param title title
+     */
+    setTitle(String title);
+
+    /**
+     * 设置表头的宽度
+     *
+     * @param titleWidth title width
+     */
+    setTitleWidth(int titleWidth);
+
+    /**
+     * 设置表头的高度
+     *
+     * @param titleHeight title height
+     */
+    setTitleHeight(int titleHeight);
+
+    /**
+     * 设置横向表头的标题（！！必须调用！！）
+     *
+     * @param rowDataList data list of row layout, must be a List<String>
+     */
+    protected void setRowDataList(List<String> rowDataList);
+
+    /**
+     * 设置纵向表头的内容
+     *
+     * @param columnDataList data list of column layout, must be a List<String>. if you don`t call this method, the default column list will be used
+     */
+    protected void setColumnDataList(List<String> columnDataList);
+
+    /**
+     * 设置纵向表头的背景色
+     *
+     * @param columnColor background color of column
+     */
+    protected void setColumnColor(String columnColor);
+
+    /**
+     * 设置标题的背景色
+     *
+     * @param titleColor background color of title
+     */
+    protected void setTitleColor(String titleColor);
+
+    /**
+     * 设置横向表头的背景色
+     *
+     * @param rowColor background color of row
+     */
+    protected void setRowColor(String rowColor);
+
+```
+
+
+ PS:多选暂时不属于本库的功能，如果有人需要的话请联系我，人多的话我抽时间封装一下。
+ email：hbdxzyb@hotmail.com
+
 
 
 
