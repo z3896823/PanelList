@@ -104,11 +104,7 @@ public class MyPanelListAdapter extends PanelListAdapter {
         ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
         lv_content.setAdapter(contentAdapter);
 
-<<<<<<< HEAD
         super.initAdapter();//一定要在设置完**后**调用父类的方法
-=======
-        super.initAdapter();//一定要在设置完后调用父类的方法
->>>>>>> 0b5e26fca48376416524dd6bbe2f73869e85db2d
     }
 
     /**
