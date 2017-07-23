@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:id="@+id/id_pl_root">
 
-
     <ListView
         android:id="@+id/id_lv_content"
         android:layout_width="match_parent"

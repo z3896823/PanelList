@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import sysu.zyb.panellistlibrary.MyHorizontalScrollView;
 import sysu.zyb.panellistlibrary.PanelListLayout;
 
 
@@ -29,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
     private PanelListLayout pl_root;
     private ListView lv_content;
-
 
 
     private List<Map<String ,String>> contentList = new ArrayList<>();
@@ -42,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
         initDataList();
 
-        MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
+        final MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
         adapter.initAdapter();
     }
 

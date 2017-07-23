@@ -10,7 +10,8 @@ import android.widget.RelativeLayout;
  *     author : zyb
  *     e-mail : hbdxzyb@hotmail.com
  *     time   : 2017/05/28
- *     desc   :
+ *     desc   : 其实就是一个RelativeLayout，这里这样写是为了让使用者不要想太多
+ *              不然外面写一个 RelativeLayout 会让人觉得莫名其妙
  *     version: 1.0
  * </pre>
  */

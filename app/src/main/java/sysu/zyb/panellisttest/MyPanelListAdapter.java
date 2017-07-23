@@ -3,6 +3,8 @@ package sysu.zyb.panellisttest;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,11 @@ public class MyPanelListAdapter extends PanelListAdapter {
     /**
      * constructor
      *
+     * @param context 上下文
+     * @param pl_root 根布局（PanelListLayout）
+     * @param lv_content content部分的布局（ListView）
+     * @param contentResourceId content 部分的 item 布局
+     * @param contentList content 部分的数据
      */
     public MyPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content,
                               int contentResourceId, List<Map<String,String>> contentList) {
@@ -51,9 +59,8 @@ public class MyPanelListAdapter extends PanelListAdapter {
     }
 
     /**
-     * 调用父类方法进行同步控制
-     *
-     * 自行编写Adapter并进行setAdapter
+     * 1. 自行编写Adapter并进行setAdapter
+     * 2. 调用父类方法进行同步控制
      */
     @Override
     public void initAdapter() {
@@ -66,8 +73,33 @@ public class MyPanelListAdapter extends PanelListAdapter {
         ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
         lv_content.setAdapter(contentAdapter);
 
-        super.initAdapter();//一定要在设置完后调用父类的方法
+        //setOnRefreshListener(new CustomRefreshListener());//需要在调用父类的方法之前设置监听
+
+        super.initAdapter();//一定要在设置完后再调用父类的方法
+
     }
+
+
+    /**
+     * 刷新数据
+     *
+     * 虽然支持自定义OnRefreshListener来设置下拉刷新的监听，但是推荐重写父类的该方法来实现刷新逻辑
+     */
+    @Override
+    public void refreshData(){
+        Log.d("ybz", "refreshData: in custom adapter");
+    }
+
+    /**
+     * 也可以自定义OnRefreshListener，然后再上面的{@link #initAdapter()}中调用setOnRefreshListener()
+     */
+//    private class CustomRefreshListener implements SwipeRefreshLayout.OnRefreshListener{
+//        @Override
+//        public void onRefresh() {
+//            Log.d("ybz", "onRefresh:  custom listener");
+//            getSwipeRefreshLayout().setRefreshing(false);
+//        }
+//    }
 
     /**
      * 重写父类的该方法，返回数据的个数即可
@@ -97,6 +129,8 @@ public class MyPanelListAdapter extends PanelListAdapter {
 
     /**
      * content部分的adapter
+     *
+     * 这里可以自由发挥，和普通的 ListView 的 Adapter 没区别
      */
     private class ContentAdapter extends ArrayAdapter {
 
