@@ -1,29 +1,32 @@
-# PanelList v1.1
+# PanelList
 
 PanelList is a simple library for displaying massive data.
 
 中间的内容部分支持上下滑动和左右滑动，且内容滑动时，对应的表头跟随滑动。
 
-主要用于展示大量数据，如酒店订房数据，股票，实验数据等。
+主要用于展示大量数据，如酒店订房数据，股票行情，实验数据等。
 
 【本库已应用于作者所在实验室的内部项目中，反馈良好。】
 
-【欢迎大家使用后提建议，有问题也欢迎提issue。如果觉得不错请star一下，这将是对我莫大的鼓励！谢谢~~】
+如有问题欢迎使用 hbdxzyb@hotmail.com 联系我。
+
+如果本项目对你有帮助，请star一下~ 谢谢~
+
+
 
 ![](https://github.com/z3896823/PanelList/blob/master/PanelList.gif)
 
-# What`s new
+# 更新日志
+### v1.1.1 -- 2017/07/23
+添加下拉刷新，使用方法见下面的API文档
+
+### v1.1 -- 2017/05/23
 v1.1版本相对初版进行了相对更高度的封装，大大降低了开发者的使用门槛，使得开发者可以像用ListView一样使用PanelList。
 同时，增加了很多个性化接口，供开发者按照自己的需求改变PanelList的效果。
 
-使用本库时，开发者只需要关心中间content部分的adapter怎么写，其余的表头部分只需要将数据传进去就可以了。剩下的数据填充及同步滑动部分将由本库自动完成。
-而且表头每个item的高度（纵向表头）和宽度（横向表头）将跟随开发者content部分的item大小自动适应。
 
-
-# Using PanelList in your application
-Step 1. Add the JitPack repository to your build file
-
-Add it in your root build.gradle at the end of repositories:
+# 导入说明
+Step 1. 在project的build.gradle文件中添加
 ```gradle
 allprojects {
 		repositories {
@@ -32,14 +35,18 @@ allprojects {
 		}
 	}
 ```
-Step 2. Add the dependency in your module gradle
+Step 2. 在主module的build.gradle文件中添加
 ```gradle
 dependencies {
 	        compile 'com.github.z3896823:PanelList:v1.1.0.1'
 	}
 ```
 
-# Get started
+# 使用说明
+
+使用本库时，开发者只需要关心中间content部分的adapter怎么写，其余的表头部分只需要将数据传进去就可以了。剩下的数据填充及同步滑动部分将由本库自动完成。
+而且表头每个item的高度（纵向表头）和宽度（横向表头）将跟随开发者content部分的item大小自动适应。
+
 ### xml文件布局示例：
 ```xml
 <sysu.zyb.panellistlibrary.PanelListLayout
@@ -47,7 +54,6 @@ dependencies {
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/id_pl_root">
-
 
     <ListView
         android:id="@+id/id_lv_content"
@@ -58,12 +64,7 @@ dependencies {
 
 </sysu.zyb.panellistlibrary.PanelListLayout>
 ```
-### MainActivity.java
-```java
-        MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
-        adapter.initAdapter();
 
-```
 
 ### MyPanelListAdapter
 ```java
@@ -89,9 +90,8 @@ public class MyPanelListAdapter extends PanelListAdapter {
     }
 
     /**
-     * 调用父类方法进行同步控制
-     *
-     * 自行编写Adapter并进行setAdapter
+     * 1. 自行编写Adapter并进行setAdapter
+     * 2. 调用父类方法进行同步控制
      */
     @Override
     public void initAdapter() {
@@ -104,11 +104,23 @@ public class MyPanelListAdapter extends PanelListAdapter {
         ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
         lv_content.setAdapter(contentAdapter);
 
-        super.initAdapter();//一定要在设置完**后**调用父类的方法
+        //setOnRefreshListener(new CustomRefreshListener());//需要在调用父类的方法之前设置监听，比较麻烦，不推荐
+
+        super.initAdapter();//一定要在设置完后再调用父类的方法
+    }
+    
+    /**
+     * 如果需要刷新数据，请重写该方法
+     *
+     * 虽然支持自定义OnRefreshListener来设置下拉刷新的监听，但是推荐以重写该方法的方式来实现刷新逻辑
+     */
+    @Override
+    public void refreshData(){
+        Log.d(null, "refreshData: in custom adapter");
     }
 
     /**
-     * 重写父类的该方法，返回数据的个数即可
+     * 重写该方法，返回数据的个数即可
      *
      * @return size of content
      */
@@ -126,7 +138,13 @@ public class MyPanelListAdapter extends PanelListAdapter {
 }
 ```
 
-# APIs
+### MainActivity.java
+```java
+        MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
+        adapter.initAdapter();
+```
+
+# APIs：
 
 ```java
     /**
@@ -184,13 +202,21 @@ public class MyPanelListAdapter extends PanelListAdapter {
      * @param rowColor background color of row
      */
     setRowColor(String rowColor);
+    
+    /**
+     * 刷新数据
+     *
+     * 虽然支持自定义OnRefreshListener来设置下拉刷新的监听，但是推荐重写父类的该方法来实现刷新逻辑
+     */
+    @Override
+    public void refreshData(){
+        Log.d(null, "refreshData: in custom adapter");
+    }
 
 ```
 
 
-虽然本库目前使用的人不多，但是真心感谢各位的支持！如果有什么你想要的功能这里面没有，请尽管使用下面的邮箱联系我！我会尽自己绵薄之力，和大家一起将本库完善！
 
-email：hbdxzyb@hotmail.com
 
 
 

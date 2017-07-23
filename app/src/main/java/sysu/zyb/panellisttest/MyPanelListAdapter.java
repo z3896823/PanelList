@@ -91,7 +91,7 @@ public class MyPanelListAdapter extends PanelListAdapter {
     }
 
     /**
-     * 也可以自定义OnRefreshListener，然后再上面的{@link #initAdapter()}中调用setOnRefreshListener()
+     * 也可以自定义OnRefreshListener，然后再上面的{@link #initAdapter()}中调用setOnRefrehlistener()
      */
 //    private class CustomRefreshListener implements SwipeRefreshLayout.OnRefreshListener{
 //        @Override
