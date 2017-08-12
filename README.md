@@ -43,7 +43,7 @@ allprojects {
 Step 2. 在主module的build.gradle文件中添加
 ```gradle
 dependencies {
-	        compile 'com.github.z3896823:PanelList:v1.1.1'
+	        compile 'com.github.z3896823:PanelList:v1.1.x' //请查阅上访的release标签，使用最新版本号
 	}
 ```
 
