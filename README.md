@@ -17,10 +17,15 @@ PanelList is a simple library for displaying massive data.
 ![](https://github.com/z3896823/PanelList/blob/master/PanelList.gif)
 
 # 更新日志
-### v1.1.1 -- 2017/07/23
+### v1.1.1.1 — 2017/08/12
+
+应广大群众需求，添加设置初始位置的方法，类似ListView的setSelection()。
+
+### v1.1.1 — 2017/07/23
+
 添加下拉刷新，使用方法见下面的API文档
 
-### v1.1 -- 2017/05/23
+### v1.1 — 2017/05/23
 v1.1版本相对初版进行了相对更高度的封装，大大降低了开发者的使用门槛，使得开发者可以像用ListView一样使用PanelList。
 同时，增加了很多个性化接口，供开发者按照自己的需求改变PanelList的效果。
 
@@ -80,8 +85,7 @@ public class MyPanelListAdapter extends PanelListAdapter {
      * constructor
      *
      */
-    public MyPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content,
-                              int contentResourceId, List<Map<String,String>> contentList) {
+    public MyPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content, int contentResourceId, List<Map<String,String>> contentList) {
         super(context, pl_root, lv_content);
         this.context = context;
         this.lv_content = lv_content;
@@ -105,7 +109,8 @@ public class MyPanelListAdapter extends PanelListAdapter {
         lv_content.setAdapter(contentAdapter);
 
         //setOnRefreshListener(new CustomRefreshListener());//需要在调用父类的方法之前设置监听，比较麻烦，不推荐
-
+      
+		setInitPosition(88);//指定初始位置。该方法public，可在Activity中调用
         super.initAdapter();//一定要在设置完后再调用父类的方法
     }
     
@@ -171,14 +176,14 @@ public class MyPanelListAdapter extends PanelListAdapter {
     /**
      * 设置横向表头的标题（！！必须调用！！）
      *
-     * @param rowDataList data list of row layout, must be a List<String>
+     * @param rowDataList data list of row layout, must be a List<String> object.There is no default data for this.
      */
     setRowDataList(List<String> rowDataList);
 
     /**
      * 设置纵向表头的内容
      *
-     * @param columnDataList data list of column layout, must be a List<String>. if you don`t call this method, the default column list will be used
+     * @param columnDataList data list of column layout, must be a List<String> object. if you don`t call this method, the default column list will be used, which is 1,2,3,4...
      */
     setColumnDataList(List<String> columnDataList);
 
@@ -203,6 +208,15 @@ public class MyPanelListAdapter extends PanelListAdapter {
      */
     setRowColor(String rowColor);
     
+	/**
+     * 设置是否开启下拉刷新（默认开启）
+     *
+     * @param bool pass true if you want to use pull to refresh
+     */
+    protected void setSwipeRefreshEnabled(boolean bool){
+        swipeRefreshEnable = bool;
+    }
+
     /**
      * 刷新数据
      *
@@ -213,6 +227,14 @@ public class MyPanelListAdapter extends PanelListAdapter {
         Log.d(null, "refreshData: in custom adapter");
     }
 
+	/**
+     * 设置content的初始position
+     * 
+     * @param initPosition
+     */
+    public void setInitPosition(int initPosition){
+        this.initPosition = initPosition;
+    }
 ```
 
 

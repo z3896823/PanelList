@@ -69,14 +69,17 @@ public class MyPanelListAdapter extends PanelListAdapter {
         setTitleWidth(150);//设置表标题的宽
         setRowDataList(getRowDataList());//设置横向表头的内容
 
+        setSwipeRefreshEnabled(false);
+
         // set自己写的contentAdapter
         ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
         lv_content.setAdapter(contentAdapter);
 
-        //setOnRefreshListener(new CustomRefreshListener());//需要在调用父类的方法之前设置监听
+        setOnRefreshListener(new CustomRefreshListener());//需要在调用父类的方法之前设置监听
+
+        setInitPosition(88);//指定初始位置。该方法public，可在Activity中调用
 
         super.initAdapter();//一定要在设置完后再调用父类的方法
-
     }
 
 
@@ -85,21 +88,21 @@ public class MyPanelListAdapter extends PanelListAdapter {
      *
      * 虽然支持自定义OnRefreshListener来设置下拉刷新的监听，但是推荐重写父类的该方法来实现刷新逻辑
      */
-    @Override
-    public void refreshData(){
-        Log.d("ybz", "refreshData: in custom adapter");
-    }
+//    @Override
+//    public void refreshData(){
+//        Log.d("ybz", "refreshData: in custom adapter");
+//    }
 
     /**
-     * 也可以自定义OnRefreshListener，然后再上面的{@link #initAdapter()}中调用setOnRefrehlistener()
+     * 也可以自定义OnRefreshListener，然后再上面的{@link #initAdapter()}中调用setOnRefreshListener()
      */
-//    private class CustomRefreshListener implements SwipeRefreshLayout.OnRefreshListener{
-//        @Override
-//        public void onRefresh() {
-//            Log.d("ybz", "onRefresh:  custom listener");
-//            getSwipeRefreshLayout().setRefreshing(false);
-//        }
-//    }
+    private class CustomRefreshListener implements SwipeRefreshLayout.OnRefreshListener{
+        @Override
+        public void onRefresh() {
+            Log.d("ybz", "onRefresh:  custom listener");
+            getSwipeRefreshLayout().setRefreshing(false);
+        }
+    }
 
     /**
      * 重写父类的该方法，返回数据的个数即可

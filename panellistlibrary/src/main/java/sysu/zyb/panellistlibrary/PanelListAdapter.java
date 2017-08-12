@@ -69,6 +69,10 @@ public abstract class PanelListAdapter {
     private String titleColor = "#CFD8DC";//default color of title
     private String rowColor = "#CDDC39";//default color of title
 
+    private boolean swipeRefreshEnable = true;//默认下拉刷新可用
+
+    private int initPosition;
+
     private BaseAdapter columnAdapter;
 
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new RefreshListener();
@@ -174,6 +178,42 @@ public abstract class PanelListAdapter {
         this.columnAdapter = columnAdapter;
     }
 
+    /**
+     * 设置content的初始position
+     *
+     * @param initPosition
+     */
+    public void setInitPosition(int initPosition){
+        this.initPosition = initPosition;
+    }
+
+    /**
+     * 返回中间内容部分的ListView
+     *
+     * @return
+     */
+    public ListView getLv_content(){
+        return lv_content;
+    }
+
+    /**
+     * 返回左边表头的ListView
+     *
+     * @return
+     */
+    public ListView getLv_column(){
+        return lv_column;
+    }
+
+    /**
+     * 设置是否开启下拉刷新（默认开启）
+     *
+     * @param bool
+     */
+    protected void setSwipeRefreshEnabled(boolean bool){
+        swipeRefreshEnable = bool;
+    }
+
     public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener){
         this.onRefreshListener = listener;
     }
@@ -185,8 +225,7 @@ public abstract class PanelListAdapter {
     /**
      * 在自定义Adapter中重写该方法以刷新数据
      */
-    protected void refreshData(){
-    }
+    protected void refreshData(){}
 
 
     //endregion
@@ -255,10 +294,14 @@ public abstract class PanelListAdapter {
             @Override
             public void run() {
                 ll_contentItem = (LinearLayout) lv_content.getChildAt(lv_content.getFirstVisiblePosition());//获得content的第一个可见item
+                Log.d(TAG, "run: ll_contentItem = "+ll_contentItem.toString());
 //                columnItemHeight = ll_contentItem.getChildAt(0).getHeight();
 //                lv_column.setAdapter(getColumnAdapter());
                 initColumnLayout();
                 initRowLayout();
+                // 当ListView绘制完成后设置初始位置，否则ll_contentItem会报空指针
+                lv_content.setSelection(initPosition);
+                lv_column.setSelection(initPosition);
             }
         });
 
@@ -284,10 +327,13 @@ public abstract class PanelListAdapter {
         lp_srl.addRule(RelativeLayout.RIGHT_OF, lv_column.getId());
         lp_srl.addRule(RelativeLayout.BELOW, tv_title.getId());
         pl_root.addView(swipeRefreshLayout, lp_srl);
+        swipeRefreshLayout.setEnabled(swipeRefreshEnable);
     }
 
 
     private void initColumnLayout(){
+
+
         columnItemHeight = ll_contentItem.getChildAt(0).getHeight();
         lv_column.setAdapter(getColumnAdapter());
     }
@@ -312,7 +358,7 @@ public abstract class PanelListAdapter {
         // 获得row 一共有多少个 item，然后使用循环往里面添加对应个数个 TextView（简单粗暴）
         int rowCount = ll_contentItem.getChildCount();
         for (int i = 0;i<rowCount; i++){
-            View contentItem = ll_contentItem.getChildAt(i);// 获得 item 的 item，以便获取宽度
+            View contentItem = ll_contentItem.getChildAt(i);// 获得item的item，以便获取宽度
             TextView rowItem = new TextView(context);
             rowItem.setText(rowDataList.get(i));//设置文字
             rowItem.getPaint().setFakeBoldText(true);
@@ -389,17 +435,15 @@ public abstract class PanelListAdapter {
             }
 
             // 滑动事件冲突，曲线救国：如果ListView的首条item的position != 0，则将下拉刷新禁用
-            if (view.getFirstVisiblePosition() != 0 && swipeRefreshLayout.isEnabled()){
-                swipeRefreshLayout.setEnabled(false);
-//                Log.d("ybz", "swipeRefreshLayout setEnable = false ");
-            }
+            if (swipeRefreshEnable) {
+                if (view.getFirstVisiblePosition() != 0 && swipeRefreshLayout.isEnabled()){
+                    swipeRefreshLayout.setEnabled(false);
+                }
 
-            if (view.getFirstVisiblePosition() == 0){
-                swipeRefreshLayout.setEnabled(true);
-//                Log.d("ybz", "swipeRefreshLayout setEnable = true ");
+                if (view.getFirstVisiblePosition() == 0){
+                    swipeRefreshLayout.setEnabled(true);
+                }
             }
-
-//            Log.d("ybz", "swipe status = "+swipeRefreshLayout.isEnabled());
         }
 
         @Override

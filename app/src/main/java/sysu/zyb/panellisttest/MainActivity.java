@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
 
         final MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
         adapter.initAdapter();
+
+//        adapter.getLv_content().setSelection(100);
+//        adapter.getLv_column().setSelection(100);
     }
 
     private void initView(){
