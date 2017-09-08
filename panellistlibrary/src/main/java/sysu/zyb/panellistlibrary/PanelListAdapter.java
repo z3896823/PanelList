@@ -240,9 +240,6 @@ public abstract class PanelListAdapter {
         mhsv_row.setOnHorizontalScrollListener(horizontalScrollListener);
         mhsv_content.setOnHorizontalScrollListener(horizontalScrollListener);
 
-
-        // 性能bug处，在7.0以上系统中，以下两行代码会占用大量的CPU资源，不断进行对齐操作，暂未找到解决方案
-        // 在4.4系统中则不会出现此类情况，但是内存资源占用会偏高
         lv_content.setOnScrollListener(verticalScrollListener);
         lv_column.setOnScrollListener(verticalScrollListener);
     }
@@ -415,8 +412,11 @@ public abstract class PanelListAdapter {
      * 两个ListView的滑动监听（垂直方向同步控制）
      */
     private class VerticalScrollListener implements AbsListView.OnScrollListener{
+
+        int scrollState;
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
+            this.scrollState = scrollState;
             if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_TOUCH_SCROLL){
                 View subView = view.getChildAt(0);//?
                 if (subView != null&& view == lv_content){
@@ -448,6 +448,10 @@ public abstract class PanelListAdapter {
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            //判断滑动是否终止，以停止自动对齐，否则该方法会一直被调用，影响性能
+            if (scrollState == SCROLL_STATE_IDLE){
+                return;
+            }
             View subView = view.getChildAt(0);
             if (subView != null && view == lv_content){
                 int top = subView.getTop();
