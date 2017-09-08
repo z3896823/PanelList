@@ -17,6 +17,11 @@ PanelList is a simple library for displaying massive data.
 ![](https://github.com/z3896823/PanelList/blob/master/PanelList.gif)
 
 # 更新日志
+
+### v1.1.1.2 —2017/09/08
+
+解决了之前同步滑动存在的性能问题，感谢wm_8800@163.com。
+
 ### v1.1.1.1 — 2017/08/12
 
 应广大群众需求，添加设置初始位置的方法，类似ListView的setSelection()。
