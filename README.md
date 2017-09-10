@@ -18,9 +18,15 @@ PanelList is a simple library for displaying massive data.
 
 # 更新日志
 
-### v1.1.1.2 —2017/09/08
+### v1.2.0 —2017/09/10
+
+采取了彻底的封装，并按照适配器模式对库的使用方法做了大幅度修改，最简化开发者的使用。
 
 解决了之前同步滑动存在的性能问题，感谢wm_8800@163.com。
+
+更新了示例（MainActivity），添加了一些多次被网友问起的功能的示范。
+
+添加了一个复杂示例（RoomActivity），模拟酒店的订房情况。
 
 ### v1.1.1.1 — 2017/08/12
 
@@ -112,21 +118,9 @@ public class MyPanelListAdapter extends PanelListAdapter {
         // set自己写的contentAdapter
         ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
         lv_content.setAdapter(contentAdapter);
-
-        //setOnRefreshListener(new CustomRefreshListener());//需要在调用父类的方法之前设置监听，比较麻烦，不推荐
       
 		setInitPosition(88);//指定初始位置。该方法public，可在Activity中调用
         super.initAdapter();//一定要在设置完后再调用父类的方法
-    }
-    
-    /**
-     * 如果需要刷新数据，请重写该方法
-     *
-     * 虽然支持自定义OnRefreshListener来设置下拉刷新的监听，但是推荐以重写该方法的方式来实现刷新逻辑
-     */
-    @Override
-    public void refreshData(){
-        Log.d(null, "refreshData: in custom adapter");
     }
 
     /**
@@ -160,21 +154,18 @@ public class MyPanelListAdapter extends PanelListAdapter {
     /**
      * 设置表的标题
      *
-     * @param title title
      */
     setTitle(String title);
 
     /**
      * 设置表头的宽度
      *
-     * @param titleWidth title width
      */
     setTitleWidth(int titleWidth);
 
     /**
      * 设置表头的高度
      *
-     * @param titleHeight title height
      */
     setTitleHeight(int titleHeight);
 
@@ -195,51 +186,41 @@ public class MyPanelListAdapter extends PanelListAdapter {
     /**
      * 设置纵向表头的背景色
      *
-     * @param columnColor background color of column
+     * color格式形如『#607D8B』，下同
      */
     setColumnColor(String columnColor);
 
     /**
      * 设置标题的背景色
      *
-     * @param titleColor background color of title
      */
     setTitleColor(String titleColor);
 
     /**
      * 设置横向表头的背景色
      *
-     * @param rowColor background color of row
      */
     setRowColor(String rowColor);
     
 	/**
-     * 设置是否开启下拉刷新（默认开启）
+     * 设置是否开启下拉刷新（默认关闭）
      *
-     * @param bool pass true if you want to use pull to refresh
      */
-    protected void setSwipeRefreshEnabled(boolean bool){
-        swipeRefreshEnable = bool;
-    }
+    setSwipeRefreshEnabled(boolean bool)；
 
     /**
-     * 刷新数据
+     * 设置下拉刷新的监听
      *
-     * 虽然支持自定义OnRefreshListener来设置下拉刷新的监听，但是推荐重写父类的该方法来实现刷新逻辑
+     * 该方法为public，你可以在Activity或Adapter中的任何地方调用此方法设置监听器
      */
-    @Override
-    public void refreshData(){
-        Log.d(null, "refreshData: in custom adapter");
-    }
+    setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener)
 
 	/**
      * 设置content的初始position
      * 
-     * @param initPosition
+     * 比如当你打开页面时不想显示第一条数据，而想显示第300条数据，那么传入300即可
      */
-    public void setInitPosition(int initPosition){
-        this.initPosition = initPosition;
-    }
+    setInitPosition(int initPosition)；
 ```
 
 

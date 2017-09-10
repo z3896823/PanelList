@@ -56,12 +56,15 @@ public abstract class PanelListAdapter {
     private LinearLayout ll_contentItem;//中间的内容部分的子布局
     private SwipeRefreshLayout swipeRefreshLayout;//中间ListView外层的下拉刷新布局
 
-    /** 标题的宽和高,同时也是列表头的宽和列表头的高 */
+    /**
+     * 标题的宽和高,同时也是列表头的宽和列表头的高
+     */
     private int titleWidth = 150;
     private int titleHeight = 100;
     private int columnItemHeight = 100;
 
-    protected String title = "Title";
+    private String title = "";
+    private int titleBackgroundResource;
     private List<String> columnDataList;
     private List<String> rowDataList;
 
@@ -69,13 +72,14 @@ public abstract class PanelListAdapter {
     private String titleColor = "#CFD8DC";//default color of title
     private String rowColor = "#CDDC39";//default color of title
 
-    private boolean swipeRefreshEnable = true;//默认下拉刷新可用
+    private boolean swipeRefreshEnable = false;//默认关闭下拉刷新
 
-    private int initPosition;
+    private int initPosition = 0;//列表显示的初始值，默认第一条数据显示在最上面
 
     private BaseAdapter columnAdapter;
+    private BaseAdapter contentAdapter;
 
-    private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new RefreshListener();
+    private SwipeRefreshLayout.OnRefreshListener onRefreshListener = new DefaultRefreshListener();
 
     /**
      * 两个监听器，分别控制水平和垂直方向上的同步滑动
@@ -87,7 +91,7 @@ public abstract class PanelListAdapter {
     /**
      * constructor
      *
-     * @param lv_content  内容的ListView
+     * @param lv_content 内容的ListView
      */
     public PanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content) {
         this.context = context;
@@ -96,13 +100,23 @@ public abstract class PanelListAdapter {
     }
 
     //region APIs
+
     /**
      * 设置表的标题
      *
      * @param title title
      */
-    protected void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
+    }
+
+    /**
+     * 设置表标题的背景
+     *
+     * @param resourceId a drawable resource id
+     */
+    public void setTitleBackgroundResource(int resourceId) {
+        this.titleBackgroundResource = resourceId;
     }
 
     /**
@@ -110,7 +124,7 @@ public abstract class PanelListAdapter {
      *
      * @param titleWidth title width
      */
-    protected void setTitleWidth(int titleWidth) {
+    public void setTitleWidth(int titleWidth) {
         this.titleWidth = titleWidth;
     }
 
@@ -119,7 +133,7 @@ public abstract class PanelListAdapter {
      *
      * @param titleHeight title height
      */
-    protected void setTitleHeight(int titleHeight) {
+    public void setTitleHeight(int titleHeight) {
         this.titleHeight = titleHeight;
     }
 
@@ -128,7 +142,7 @@ public abstract class PanelListAdapter {
      *
      * @param rowDataList data list of row layout, must be a List<String>
      */
-    protected void setRowDataList(List<String> rowDataList) {
+    public void setRowDataList(List<String> rowDataList) {
         this.rowDataList = rowDataList;
     }
 
@@ -138,7 +152,7 @@ public abstract class PanelListAdapter {
      * @param columnDataList data list of column layout, must be a List<String>. if you don`t call
      *                       this method, the default column list will be used
      */
-    protected void setColumnDataList(List<String> columnDataList) {
+    public void setColumnDataList(List<String> columnDataList) {
         this.columnDataList = columnDataList;
     }
 
@@ -147,7 +161,7 @@ public abstract class PanelListAdapter {
      *
      * @param columnColor background color of column
      */
-    protected void setColumnColor(String columnColor) {
+    public void setColumnColor(String columnColor) {
         this.columnColor = columnColor;
     }
 
@@ -156,7 +170,7 @@ public abstract class PanelListAdapter {
      *
      * @param titleColor background color of title
      */
-    protected void setTitleColor(String titleColor) {
+    public void setTitleColor(String titleColor) {
         this.titleColor = titleColor;
     }
 
@@ -165,7 +179,7 @@ public abstract class PanelListAdapter {
      *
      * @param rowColor background color of row
      */
-    protected void setRowColor(String rowColor) {
+    public void setRowColor(String rowColor) {
         this.rowColor = rowColor;
     }
 
@@ -174,66 +188,84 @@ public abstract class PanelListAdapter {
      *
      * @param columnAdapter adapter of column ListView
      */
-    protected void setColumnAdapter(BaseAdapter columnAdapter) {
+    public void setColumnAdapter(BaseAdapter columnAdapter) {
         this.columnAdapter = columnAdapter;
     }
 
     /**
      * 设置content的初始position
+     * <p>
+     * 比如你想进入这个Activity的时候让第300条数据显示在屏幕上（前提是该数据存在）
+     * 那么在这里传入299即可
      *
-     * @param initPosition
+     * @param initPosition position
      */
-    public void setInitPosition(int initPosition){
+    public void setInitPosition(int initPosition) {
         this.initPosition = initPosition;
     }
 
     /**
      * 返回中间内容部分的ListView
      *
-     * @return
+     * @return listView of content
      */
-    public ListView getLv_content(){
+    public ListView getLv_content() {
         return lv_content;
     }
 
     /**
      * 返回左边表头的ListView
      *
-     * @return
+     * @return listView of column(left)
      */
-    public ListView getLv_column(){
+    public ListView getLv_column() {
         return lv_column;
     }
 
     /**
-     * 设置是否开启下拉刷新（默认开启）
+     * 设置是否开启下拉刷新（默认关闭）
      *
-     * @param bool
+     * @param bool pass true to enable pullToRefresh
      */
-    protected void setSwipeRefreshEnabled(boolean bool){
+    public void setSwipeRefreshEnabled(boolean bool) {
         swipeRefreshEnable = bool;
     }
 
-    public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener){
+    /**
+     * 这里有点蛋疼，因为控件是在initAdapter中赋值的，但是这里要用
+     * 所以如果开发者在setAdapter之前调用了该方法，则必须对控件进行赋值
+     * 但如果赋值了，还得判断开发者是否设置了初始位置，因为控件默认开启，如果初始位置不为0，则控件启用
+     * 这样会造成在中间阶段下拉会触发监听，因此对initPosition再进行一次判断
+     * 当用户发生了滑动操作，控件的状态会被随即改变
+     *
+     * @param listener
+     */
+    public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
         this.onRefreshListener = listener;
+        if (swipeRefreshLayout == null) {
+            swipeRefreshLayout = new SwipeRefreshLayout(context);
+            if (initPosition != 0) {
+                swipeRefreshLayout.setEnabled(false);
+            }
+        }
+        swipeRefreshLayout.setOnRefreshListener(listener);
+        Log.d(TAG, "setOnRefreshListener: " + onRefreshListener.toString());
     }
 
-    public SwipeRefreshLayout getSwipeRefreshLayout(){
+    public SwipeRefreshLayout getSwipeRefreshLayout() {
         return swipeRefreshLayout;
     }
 
-    /**
-     * 在自定义Adapter中重写该方法以刷新数据
-     */
-    protected void refreshData(){}
-
-
     //endregion
+
+    protected abstract BaseAdapter getContentAdapter();
 
     /**
      * 初始化总Adapter，加载数据到视图
      */
-    protected void initAdapter(){
+    void initAdapter() {
+
+        contentAdapter = getContentAdapter();
 
         reorganizeViewGroup();
 
@@ -250,7 +282,7 @@ public abstract class PanelListAdapter {
     /**
      * 核心代码：
      * 整理重组整个表的布局
-     *
+     * <p>
      * 主要包含4个部分
      * 1. title
      * 2. row
@@ -259,12 +291,17 @@ public abstract class PanelListAdapter {
      */
     private void reorganizeViewGroup() {
 
+        lv_content.setAdapter(contentAdapter);
+
         // clear root viewGroup
         pl_root.removeView(lv_content);
 
         // 1. title (TextView --> PanelListLayout)
         tv_title = new TextView(context);
         tv_title.setText(title);
+        if (titleBackgroundResource != 0) {
+            tv_title.setBackgroundResource(titleBackgroundResource);
+        }
         tv_title.getPaint().setFakeBoldText(true);
         tv_title.setGravity(Gravity.CENTER);
         tv_title.setBackgroundColor(Color.parseColor(titleColor));
@@ -291,9 +328,6 @@ public abstract class PanelListAdapter {
             @Override
             public void run() {
                 ll_contentItem = (LinearLayout) lv_content.getChildAt(lv_content.getFirstVisiblePosition());//获得content的第一个可见item
-                Log.d(TAG, "run: ll_contentItem = "+ll_contentItem.toString());
-//                columnItemHeight = ll_contentItem.getChildAt(0).getHeight();
-//                lv_column.setAdapter(getColumnAdapter());
                 initColumnLayout();
                 initRowLayout();
                 // 当ListView绘制完成后设置初始位置，否则ll_contentItem会报空指针
@@ -317,47 +351,51 @@ public abstract class PanelListAdapter {
         mhsv_content.addView(lv_content);//因为 lv_content 在 xml 文件中已经设置了 layout 为 match_parent，所以这里add时不需要再加 LayoutParameter 对象
         mhsv_content.setOverScrollMode(View.OVER_SCROLL_NEVER);//去除滑动到边缘时出现的阴影
         RelativeLayout.LayoutParams lp_mhsv_content = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        swipeRefreshLayout= new SwipeRefreshLayout(context);
-        swipeRefreshLayout.addView(mhsv_content,lp_mhsv_content);
+//        swipeRefreshLayout = new SwipeRefreshLayout(context);
+        swipeRefreshLayout.addView(mhsv_content, lp_mhsv_content);
         swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
+        Log.d(TAG, "reorganizeViewGroup: " + onRefreshListener.toString());
         RelativeLayout.LayoutParams lp_srl = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp_srl.addRule(RelativeLayout.RIGHT_OF, lv_column.getId());
         lp_srl.addRule(RelativeLayout.BELOW, tv_title.getId());
         pl_root.addView(swipeRefreshLayout, lp_srl);
-        swipeRefreshLayout.setEnabled(swipeRefreshEnable);
+        if (initPosition == 0) {
+            swipeRefreshLayout.setEnabled(swipeRefreshEnable);
+        }
     }
 
 
-    private void initColumnLayout(){
+    private void initColumnLayout() {
 
-
-        columnItemHeight = ll_contentItem.getChildAt(0).getHeight();
+        columnItemHeight = ll_contentItem.getHeight();
+        Log.d(TAG, "initColumnLayout: columnItemHeight = " + columnItemHeight);
         lv_column.setAdapter(getColumnAdapter());
     }
 
 
     /**
      * 初始化横向表头的布局，必须在所有的布局都载入完之后才能调用
-     *
+     * <p>
      * must be called in pl_root.post();
      */
-    private void initRowLayout(){
+    private void initRowLayout() {
 
-        if (rowDataList == null){
-            Log.e("PanelList", "row data list must be set! needs to call setRowDataList(List<String> rowDataList) in your adapter");
-            return;
+        if (rowDataList == null) {
+            Log.e("PanelList", "custom Row data list is strongly recommended! Call setRowDataList(List<String> rowDataList) in your panel adapter");
         }
+        int rowCount = ll_contentItem.getChildCount();
+
+        List<String> rowDataList1 = getRowDataList(rowCount);
 
         ll_row.setBackgroundColor(Color.parseColor(rowColor));
-        ll_row.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE|LinearLayout.SHOW_DIVIDER_BEGINNING);
+        ll_row.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.SHOW_DIVIDER_BEGINNING);
         ll_row.setDividerDrawable(context.getResources().getDrawable(R.drawable.row_item_divider));
 
-        // 获得row 一共有多少个 item，然后使用循环往里面添加对应个数个 TextView（简单粗暴）
-        int rowCount = ll_contentItem.getChildCount();
-        for (int i = 0;i<rowCount; i++){
+        // 获得row一共有多少个item，然后使用循环往里面添加对应个数个TextView（简单粗暴）
+        for (int i = 0; i < rowCount; i++) {
             View contentItem = ll_contentItem.getChildAt(i);// 获得item的item，以便获取宽度
             TextView rowItem = new TextView(context);
-            rowItem.setText(rowDataList.get(i));//设置文字
+            rowItem.setText(rowDataList1.get(i));//设置文字
             rowItem.getPaint().setFakeBoldText(true);
             rowItem.setWidth(contentItem.getWidth());//设置宽度
             rowItem.setHeight(titleHeight);//设置高度
@@ -367,14 +405,33 @@ public abstract class PanelListAdapter {
     }
 
     /**
+     * 返回横向表头的内容列表
+     * <p>
+     * 如果设置了自定义的表头内容，则直接返回引用
+     * 如果用户没设置，则根据传进来的count数生成一个默认表头
+     */
+    private List<String> getRowDataList(int count) {
+        if (rowDataList == null) {
+            List<String> defaultRowDataList = new ArrayList<>();
+            for (int i = 0; i < count; i++) {
+                String s = "Row" + i;
+                defaultRowDataList.add(s);
+            }
+            return defaultRowDataList;
+        } else {
+            return rowDataList;
+        }
+    }
+
+    /**
      * 返回纵向表头的数据列表
      *
      * @return data list of column ListView
      */
-    private List<String> getColumnDataList(){
-        if (columnDataList == null){
+    private List<String> getColumnDataList() {
+        if (columnDataList == null) {
             columnDataList = new ArrayList<>();
-            for (int i = 1;i<= getCount();i++){
+            for (int i = 1; i <= getCount(); i++) {
                 columnDataList.add(String.valueOf(i));
             }
         }
@@ -393,17 +450,16 @@ public abstract class PanelListAdapter {
         return columnAdapter;
     }
 
-
     /**
      * HorizontalScrollView的滑动监听（水平方向同步控制）
      */
     private class HorizontalScrollListener implements MyHorizontalScrollView.OnHorizontalScrollListener {
         @Override
         public void onHorizontalScrolled(MyHorizontalScrollView view, int l, int t, int oldl, int oldt) {
-            if (view == mhsv_content){
-                mhsv_row.scrollTo(l,t);
-            } else{
-                mhsv_content.scrollTo(l,t);
+            if (view == mhsv_content) {
+                mhsv_row.scrollTo(l, t);
+            } else {
+                mhsv_content.scrollTo(l, t);
             }
         }
     }
@@ -411,36 +467,36 @@ public abstract class PanelListAdapter {
     /**
      * 两个ListView的滑动监听（垂直方向同步控制）
      */
-    private class VerticalScrollListener implements AbsListView.OnScrollListener{
+    private class VerticalScrollListener implements AbsListView.OnScrollListener {
 
         int scrollState;
+
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
             this.scrollState = scrollState;
-            if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_TOUCH_SCROLL){
+            if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_TOUCH_SCROLL) {
                 View subView = view.getChildAt(0);//?
-                if (subView != null&& view == lv_content){
+                if (subView != null && view == lv_content) {
                     int top = subView.getTop();
                     int position = view.getFirstVisiblePosition();
 //                    Log.d("ybz", "onScrollStateChanged: position = "+position);
 //                    Log.d("ybz", "onScrollStateChanged: top = "+top);
 
-
-                    lv_column.setSelectionFromTop(position,top);
-                } else if (subView != null&& view == lv_column){
+                    lv_column.setSelectionFromTop(position, top);
+                } else if (subView != null && view == lv_column) {
                     int top = subView.getTop();
                     int position = view.getFirstVisiblePosition();
-                    lv_content.setSelectionFromTop(position,top);
+                    lv_content.setSelectionFromTop(position, top);
                 }
             }
 
             // 滑动事件冲突，曲线救国：如果ListView的首条item的position != 0，则将下拉刷新禁用
             if (swipeRefreshEnable) {
-                if (view.getFirstVisiblePosition() != 0 && swipeRefreshLayout.isEnabled()){
+                if (view.getFirstVisiblePosition() != 0 && swipeRefreshLayout.isEnabled()) {
                     swipeRefreshLayout.setEnabled(false);
                 }
 
-                if (view.getFirstVisiblePosition() == 0){
+                if (view.getFirstVisiblePosition() == 0) {
                     swipeRefreshLayout.setEnabled(true);
                 }
             }
@@ -449,26 +505,26 @@ public abstract class PanelListAdapter {
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             //判断滑动是否终止，以停止自动对齐，否则该方法会一直被调用，影响性能
-            if (scrollState == SCROLL_STATE_IDLE){
+            if (scrollState == SCROLL_STATE_IDLE) {
                 return;
             }
             View subView = view.getChildAt(0);
-            if (subView != null && view == lv_content){
+            if (subView != null && view == lv_content) {
                 int top = subView.getTop();
-                lv_column.setSelectionFromTop(firstVisibleItem,top);
-            } else if (subView != null&& view == lv_column){
+                lv_column.setSelectionFromTop(firstVisibleItem, top);
+            } else if (subView != null && view == lv_column) {
                 int top = subView.getTop();
-                lv_content.setSelectionFromTop(firstVisibleItem,top);
+                lv_content.setSelectionFromTop(firstVisibleItem, top);
             }
         }
     }
 
     /**
      * 默认的columnAdapter
-     *
+     * <p>
      * 之所以重写是为了根据content的item之高度动态设置column的item之高度
      */
-    private class ColumnAdapter extends ArrayAdapter{
+    private class ColumnAdapter extends ArrayAdapter {
 
         private int resourceId;
         private List<String> columnDataList;
@@ -489,28 +545,33 @@ public abstract class PanelListAdapter {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View view;
 
-            if (convertView == null){
-                view = LayoutInflater.from(context).inflate(resourceId,parent,false);
-                view.getLayoutParams().height = columnItemHeight;//由于自定义的布局高度比默认的小，所以必须要用这种方式设置高度才会生效
+            if (convertView == null) {
+//                view = LayoutInflater.from(context).inflate(resourceId, parent, false);
+                view = new TextView(context);
+                ((TextView) view).setHeight(columnItemHeight);
+                //如果以上设置高度的代码无法生效，则使用下面的方式设置
+//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(titleWidth,columnItemHeight);
+//                view.setLayoutParams(lp);
+//                view.getLayoutParams().height = columnItemHeight;
             } else {
                 view = convertView;
             }
 
-            ((TextView)view).setText(columnDataList.get(position));
-            ((TextView)view).setTextSize(15);
-            view.setPadding(0,0,0,0);
+            ((TextView) view).setText(columnDataList.get(position));
+            ((TextView) view).setTextSize(15);
+            view.setPadding(0, 0, 0, 0);
             ((TextView) view).setGravity(Gravity.CENTER);
 
             return view;
         }
     }
 
-    private class RefreshListener implements SwipeRefreshLayout.OnRefreshListener{
+    private class DefaultRefreshListener implements SwipeRefreshLayout.OnRefreshListener {
         @Override
         public void onRefresh() {
-            refreshData();
-//            Log.d(TAG, "onRefresh: ");
-            if (swipeRefreshLayout.isRefreshing()){
+            Toast.makeText(context, "请调用PanelListAdapter的setOnRefreshListener()并传入你的Listener", Toast.LENGTH_SHORT).show();
+            if (swipeRefreshLayout.isRefreshing()) {
+
                 swipeRefreshLayout.setRefreshing(false);
             }
         }

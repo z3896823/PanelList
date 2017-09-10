@@ -1,5 +1,6 @@
 package sysu.zyb.panellisttest;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import sysu.zyb.panellistlibrary.PanelListLayout;
 
 
@@ -27,8 +29,9 @@ public class MainActivity extends AppCompatActivity {
     private PanelListLayout pl_root;
     private ListView lv_content;
 
+    private MyPanelListAdapter adapter;
 
-    private List<Map<String ,String>> contentList = new ArrayList<>();
+    private List<Map<String, String>> contentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +39,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initView();
-        initDataList();
+        initContentDataList();
 
-        final MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
-        adapter.initAdapter();
-
-//        adapter.getLv_content().setSelection(100);
-//        adapter.getLv_column().setSelection(100);
+        adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
+        adapter.setInitPosition(10);
+        adapter.setSwipeRefreshEnabled(true);
+        adapter.setRowDataList(getRowDataList());
+        adapter.setOnRefreshListener(new CustomRefreshListener());
+        pl_root.setAdapter(adapter);
     }
 
-    private void initView(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.id_menu_updateData:
+                changeContentDataList();
+                break;
+            case R.id.id_menu_insert:
+                insertData();
+                break;
+            case R.id.id_menu_delete:
+                removeData();
+                break;
+            default:
+                break;
+        }
+        ((ArrayAdapter) (adapter.getLv_content().getAdapter())).notifyDataSetChanged();
+        return true;
+    }
+
+    private void initView() {
 
         pl_root = (PanelListLayout) findViewById(R.id.id_pl_root);
         lv_content = (ListView) findViewById(R.id.id_lv_content);
@@ -58,33 +87,97 @@ public class MainActivity extends AppCompatActivity {
         lv_content.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "你选中的position为："+position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "你选中的position为：" + position, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public class CustomRefreshListener implements SwipeRefreshLayout.OnRefreshListener{
+        @Override
+        public void onRefresh() {
+            // do sth here, example:
+            Toast.makeText(MainActivity.this, "custom SwipeRefresh listener", Toast.LENGTH_SHORT).show();
+            adapter.getSwipeRefreshLayout().setRefreshing(false);// don`t forget to call this
+        }
+    }
+
+    /** 生成一份横向表头的内容
+     *
+     * @return List<String>
+     */
+    private List<String> getRowDataList(){
+        List<String> rowDataList = new ArrayList<>();
+        rowDataList.add("第一列");
+        rowDataList.add("第二列");
+        rowDataList.add("第三列");
+        rowDataList.add("第四列");
+        rowDataList.add("第五列");
+        rowDataList.add("第六列");
+        rowDataList.add("第七列");
+        return rowDataList;
     }
 
     /**
      * 初始化content数据
      */
-    private void initDataList(){
-        for (int i = 1;i<1001;i++){
-            Map<String ,String> data = new HashMap<>();
-            data.put("1","第"+i+"行第一个");
-            data.put("2","第"+i+"行第二个");
-            data.put("3","第"+i+"行第三个");
-            data.put("4","第"+i+"行第四个");
-            data.put("5","第"+i+"行第五个");
-            data.put("6","第"+i+"行第六个");
-            data.put("7","第"+i+"行第七个");
+    private void initContentDataList() {
+        for (int i = 1; i < 500; i++) {
+            Map<String, String> data = new HashMap<>();
+            data.put("1", "第" + i + "行第一个");
+            data.put("2", "第" + i + "行第二个");
+            data.put("3", "第" + i + "行第三个");
+            data.put("4", "第" + i + "行第四个");
+            data.put("5", "第" + i + "行第五个");
+            data.put("6", "第" + i + "行第六个");
+            data.put("7", "第" + i + "行第七个");
             contentList.add(data);
         }
     }
 
     /**
-     * 多选模式的监听器
-     *
+     * 更新content数据
      */
-    private class MultiChoiceModeCallback implements ListView.MultiChoiceModeListener{
+    private void changeContentDataList() {
+        contentList.clear();
+        for (int i = 1; i < 500; i++) {
+            Map<String, String> data = new HashMap<>();
+            data.put("1", "第" + i + "第一个");
+            data.put("2", "第" + i + "第二个");
+            data.put("3", "第" + i + "第三个");
+            data.put("4", "第" + i + "第四个");
+            data.put("5", "第" + i + "第五个");
+            data.put("6", "第" + i + "第六个");
+            data.put("7", "第" + i + "第七个");
+            contentList.add(data);
+        }
+    }
+
+    /**
+     * 插入一个数据
+     */
+    private void insertData(){
+        Map<String, String> data = new HashMap<>();
+        data.put("1", "插入1");
+        data.put("2", "插入2");
+        data.put("3", "插入3");
+        data.put("4", "插入4");
+        data.put("5", "插入5");
+        data.put("6", "插入6");
+        data.put("7", "插入7");
+        contentList.add(10,data);
+    }
+
+    /**
+     * 删除一个数据
+     */
+    private void removeData(){
+        contentList.remove(10);
+    }
+
+    /**
+     * 多选模式的监听器
+     */
+    private class MultiChoiceModeCallback implements ListView.MultiChoiceModeListener {
 
         private View actionBarView;
         private TextView tv_selectedCount;
@@ -100,10 +193,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // menu
-            getMenuInflater().inflate(R.menu.menu_multichoice,menu);
+            getMenuInflater().inflate(R.menu.menu_multichoice, menu);
             // actionBar
-            if (actionBarView == null){
-                actionBarView = LayoutInflater.from(MainActivity.this).inflate(R.layout.actionbar_listviewmultichoice,null);
+            if (actionBarView == null) {
+                actionBarView = LayoutInflater.from(MainActivity.this).inflate(R.layout.actionbar_listviewmultichoice, null);
                 tv_selectedCount = (TextView) actionBarView.findViewById(R.id.id_tv_selectedCount);
             }
             mode.setCustomView(actionBarView);
@@ -112,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * 和onCreateActionMode差不多的时机调用，不写逻辑
+         *
          * @param mode
          * @param menu
          * @return
@@ -130,10 +224,10 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.id_menu_selectAll:
-                    for (int i = 0; i<lv_content.getAdapter().getCount();i++){
-                        lv_content.setItemChecked(i,true);
+                    for (int i = 0; i < lv_content.getAdapter().getCount(); i++) {
+                        lv_content.setItemChecked(i, true);
                     }
                     tv_selectedCount.setText(String.valueOf(lv_content.getAdapter().getCount()));
                     break;
@@ -143,19 +237,19 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("ybz", booleanArray.toString());
 
                     List<Integer> checkedItemPositionList = new ArrayList<>();
-                    for (int i = 0; i<contentList.size();i++){
-                        if (lv_content.isItemChecked(i)){
+                    for (int i = 0; i < contentList.size(); i++) {
+                        if (lv_content.isItemChecked(i)) {
                             checkedItemPositionList.add(i);
                             Log.d("ybz", "被选中的item： " + i);
                         }
                     }
 
                     StringBuilder checkedItemString = new StringBuilder();
-                    for (int i = 0; i<checkedItemPositionList.size();i++){
-                        checkedItemString.append(checkedItemPositionList.get(i)+",");
+                    for (int i = 0; i < checkedItemPositionList.size(); i++) {
+                        checkedItemString.append(checkedItemPositionList.get(i) + ",");
                     }
 
-                    Toast.makeText(MainActivity.this, "你选中的position有："+checkedItemString, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "你选中的position有：" + checkedItemString, Toast.LENGTH_SHORT).show();
                     break;
             }
             return true;
@@ -173,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * 当item的选中状态发生改变时调用
+         *
          * @param mode
          * @param position
          * @param id
@@ -182,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
             int selectedCount = lv_content.getCheckedItemCount();
             tv_selectedCount.setText(String.valueOf(selectedCount));
-            ((ArrayAdapter)lv_content.getAdapter()).notifyDataSetChanged();
+            ((ArrayAdapter) lv_content.getAdapter()).notifyDataSetChanged();
         }
     }
 }

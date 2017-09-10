@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sysu.zyb.panellistlibrary.PanelListLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/id_pl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/id_lv_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</sysu.zyb.panellistlibrary.PanelListLayout>

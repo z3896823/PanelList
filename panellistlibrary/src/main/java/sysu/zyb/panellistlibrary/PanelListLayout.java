@@ -18,6 +18,17 @@ import android.widget.RelativeLayout;
 
 public class PanelListLayout extends RelativeLayout {
 
+    private PanelListAdapter adapter;
+
+    public PanelListAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(PanelListAdapter adapter) {
+        this.adapter = adapter;
+        adapter.initAdapter();
+    }
+
     public PanelListLayout(Context context) {
         super(context);
     }
