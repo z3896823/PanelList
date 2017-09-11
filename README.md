@@ -1,6 +1,6 @@
 # PanelList
 
-PanelList is a simple library for displayin data. It makes it possible to display massive data on a limited screen, just like what you see in Microsoft Excel. 
+PanelList is a simple library for displaying data. It makes it possible to display massive data on a limited screen, just like what you see in Microsoft Excel. 
 
 It could be used to show hotel reservation data (like the demo below), stock data and etc.
 
@@ -12,9 +12,9 @@ Don`t forget to star if it really helps you. ：）
 
 ## DEMO 
 
-[](https://github.com/z3896823/PanelList/blob/master/PanelList1.gif)
+[](https://github.com/z3896823/PanelList/blob/master/PanelList_1.gif)
 
-[](https://github.com/z3896823/PanelList/blob/master/PanelList2.gif)
+[](https://github.com/z3896823/PanelList/blob/master/PanelList_2.gif)
 
 ## ChangeLog
 
