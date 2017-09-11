@@ -2,6 +2,7 @@ package sysu.zyb.panellistlibrary;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.view.View.SCROLLBAR_POSITION_LEFT;
+import static android.view.View.SCROLLBAR_POSITION_RIGHT;
 
 /**
  * <pre>
@@ -71,6 +75,9 @@ public abstract class PanelListAdapter {
     private String columnColor = "#607D8B";//default color of column
     private String titleColor = "#CFD8DC";//default color of title
     private String rowColor = "#CDDC39";//default color of title
+
+    private Drawable rowDivider;
+    private Drawable columnDivider;
 
     private boolean swipeRefreshEnable = false;//默认关闭下拉刷新
 
@@ -157,6 +164,22 @@ public abstract class PanelListAdapter {
     }
 
     /**
+     * 横向表头的分割线
+     *
+     */
+    public void setRowDivider(Drawable rowDivider) {
+        this.rowDivider = rowDivider;
+    }
+
+    /**
+     * 纵向表头的分割线
+     *
+     */
+    public void setColumnDivider(Drawable columnDivider) {
+        this.columnDivider = columnDivider;
+    }
+
+    /**
      * 设置纵向表头的背景色
      *
      * @param columnColor background color of column
@@ -209,7 +232,7 @@ public abstract class PanelListAdapter {
      *
      * @return listView of content
      */
-    public ListView getLv_content() {
+    public ListView getContentListView() {
         return lv_content;
     }
 
@@ -218,8 +241,17 @@ public abstract class PanelListAdapter {
      *
      * @return listView of column(left)
      */
-    public ListView getLv_column() {
+    public ListView getColumnListView() {
         return lv_column;
+    }
+
+    /**
+     * 返回上访表头的最外层布局
+     *
+     * @return a CheckableLinearLayout
+     */
+    public LinearLayout getRowLayout(){
+        return ll_row;
     }
 
     /**
@@ -292,6 +324,7 @@ public abstract class PanelListAdapter {
     private void reorganizeViewGroup() {
 
         lv_content.setAdapter(contentAdapter);
+        lv_content.setVerticalScrollBarEnabled(true);
 
         // clear root viewGroup
         pl_root.removeView(lv_content);
@@ -323,18 +356,6 @@ public abstract class PanelListAdapter {
         lp_mhsv_row.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         pl_root.addView(mhsv_row, lp_mhsv_row);
 
-        // 发一个消息出去。当布局渲染完成之后会执行消息内容，此时
-        pl_root.post(new Runnable() {
-            @Override
-            public void run() {
-                ll_contentItem = (LinearLayout) lv_content.getChildAt(lv_content.getFirstVisiblePosition());//获得content的第一个可见item
-                initColumnLayout();
-                initRowLayout();
-                // 当ListView绘制完成后设置初始位置，否则ll_contentItem会报空指针
-                lv_content.setSelection(initPosition);
-                lv_column.setSelection(initPosition);
-            }
-        });
 
         // 3. column （ListView --> PanelListLayout）
         lv_column = new ListView(context);
@@ -351,7 +372,9 @@ public abstract class PanelListAdapter {
         mhsv_content.addView(lv_content);//因为 lv_content 在 xml 文件中已经设置了 layout 为 match_parent，所以这里add时不需要再加 LayoutParameter 对象
         mhsv_content.setOverScrollMode(View.OVER_SCROLL_NEVER);//去除滑动到边缘时出现的阴影
         RelativeLayout.LayoutParams lp_mhsv_content = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        swipeRefreshLayout = new SwipeRefreshLayout(context);
+        if (swipeRefreshLayout == null){
+            swipeRefreshLayout = new SwipeRefreshLayout(context);
+        }
         swipeRefreshLayout.addView(mhsv_content, lp_mhsv_content);
         swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
         Log.d(TAG, "reorganizeViewGroup: " + onRefreshListener.toString());
@@ -362,14 +385,29 @@ public abstract class PanelListAdapter {
         if (initPosition == 0) {
             swipeRefreshLayout.setEnabled(swipeRefreshEnable);
         }
+
+        // 发一个消息出去。当布局渲染完成之后会执行消息内容，此时
+        pl_root.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "post--lv_content = "+ lv_content.toString());
+//                ll_contentItem = (LinearLayout) lv_content.getChildAt(lv_content.getFirstVisiblePosition());//获得content的第一个可见item
+                ll_contentItem = (LinearLayout) lv_content.getChildAt(0);//获得content的第一个可见item
+                initColumnLayout();
+                initRowLayout();
+                // 当ListView绘制完成后设置初始位置，否则ll_contentItem会报空指针
+                lv_content.setSelection(initPosition);
+                lv_column.setSelection(initPosition);
+            }
+        });
     }
 
-
     private void initColumnLayout() {
-
         columnItemHeight = ll_contentItem.getHeight();
-        Log.d(TAG, "initColumnLayout: columnItemHeight = " + columnItemHeight);
         lv_column.setAdapter(getColumnAdapter());
+        if (columnDivider != null) {
+            lv_column.setDivider(columnDivider);
+        }
     }
 
 
@@ -387,9 +425,13 @@ public abstract class PanelListAdapter {
 
         List<String> rowDataList1 = getRowDataList(rowCount);
 
+        //分隔线的设置，如果content的item设置了分割线，那row使用相同的分割线，除非单独给row设置了分割线
         ll_row.setBackgroundColor(Color.parseColor(rowColor));
-        ll_row.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE | LinearLayout.SHOW_DIVIDER_BEGINNING);
-        ll_row.setDividerDrawable(context.getResources().getDrawable(R.drawable.row_item_divider));
+        if (rowDivider == null) {
+            ll_row.setDividerDrawable(ll_contentItem.getDividerDrawable());
+        } else {
+            ll_row.setDividerDrawable(rowDivider);
+        }
 
         // 获得row一共有多少个item，然后使用循环往里面添加对应个数个TextView（简单粗暴）
         for (int i = 0; i < rowCount; i++) {
@@ -406,7 +448,7 @@ public abstract class PanelListAdapter {
 
     /**
      * 返回横向表头的内容列表
-     * <p>
+     *
      * 如果设置了自定义的表头内容，则直接返回引用
      * 如果用户没设置，则根据传进来的count数生成一个默认表头
      */
@@ -546,7 +588,6 @@ public abstract class PanelListAdapter {
             View view;
 
             if (convertView == null) {
-//                view = LayoutInflater.from(context).inflate(resourceId, parent, false);
                 view = new TextView(context);
                 ((TextView) view).setHeight(columnItemHeight);
                 //如果以上设置高度的代码无法生效，则使用下面的方式设置

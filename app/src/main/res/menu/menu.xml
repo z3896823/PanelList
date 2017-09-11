@@ -14,4 +14,8 @@
         android:id="@+id/id_menu_insert"
         android:title="insert No.10"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/id_menu_next"
+        android:title="another activity"
+        app:showAsAction="never"/>
 </menu>

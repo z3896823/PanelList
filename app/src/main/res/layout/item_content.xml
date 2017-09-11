@@ -57,6 +57,4 @@
         android:layout_height="30dp"
         android:gravity="center"
         tools:text="07"/>
-
-
 </sysu.zyb.panellistlibrary.CheckableLinearLayout>

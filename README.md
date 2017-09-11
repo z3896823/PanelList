@@ -1,48 +1,30 @@
 # PanelList
 
-PanelList is a simple library for displaying massive data.
+PanelList is a simple library for displayin data. It makes it possible to display massive data on a limited screen, just like what you see in Microsoft Excel. 
 
-中间的内容部分支持上下滑动和左右滑动，且内容滑动时，对应的表头跟随滑动。
+It could be used to show hotel reservation data (like the demo below), stock data and etc.
 
-主要用于展示大量数据，如酒店订房数据，股票行情，实验数据等。
+If you have any problem using this library, please feel free to contact me via hbdxzyb@hotmail.com.
 
-【本库已应用于作者所在实验室的内部项目中，反馈良好。】
+Don`t forget to star if it really helps you. ：）
 
-如有问题欢迎使用 hbdxzyb@hotmail.com 联系我。
+[Introduction in Chinese](https://github.com/z3896823/PanelList/blob/master/README_CHS.md)
 
-如果本项目对你有帮助，请star一下~ 谢谢~
+## DEMO 
 
+[](https://github.com/z3896823/PanelList/blob/master/PanelList1.gif)
 
+[](https://github.com/z3896823/PanelList/blob/master/PanelList2.gif)
 
-![](https://github.com/z3896823/PanelList/blob/master/PanelList.gif)
+## ChangeLog
 
-# 更新日志
+- v1.1 (20170523)— add some APIs
+- v1.1.1 (20170723) — add swipe refresh
+- v1.1.1.1 (20170812) — add an API to set initial position
+- v1.2.0 (20170911) — Big change! Now you can set everything in your activity and call setAdapter() to finish your job. And also some bug fixed.
 
-### v1.2.0 —2017/09/10
-
-采取了彻底的封装，并按照适配器模式对库的使用方法做了大幅度修改，最简化开发者的使用。
-
-解决了之前同步滑动存在的性能问题，感谢wm_8800@163.com。
-
-更新了示例（MainActivity），添加了一些多次被网友问起的功能的示范。
-
-添加了一个复杂示例（RoomActivity），模拟酒店的订房情况。
-
-### v1.1.1.1 — 2017/08/12
-
-应广大群众需求，添加设置初始位置的方法，类似ListView的setSelection()。
-
-### v1.1.1 — 2017/07/23
-
-添加下拉刷新，使用方法见下面的API文档
-
-### v1.1 — 2017/05/23
-v1.1版本相对初版进行了相对更高度的封装，大大降低了开发者的使用门槛，使得开发者可以像用ListView一样使用PanelList。
-同时，增加了很多个性化接口，供开发者按照自己的需求改变PanelList的效果。
-
-
-# 导入说明
-Step 1. 在project的build.gradle文件中添加
+## Installing
+Step 1. add this to your project build.gradle
 ```gradle
 allprojects {
 		repositories {
@@ -51,20 +33,21 @@ allprojects {
 		}
 	}
 ```
-Step 2. 在主module的build.gradle文件中添加
+Step 2. add this to build.gradle of your module
 ```gradle
 dependencies {
-	        compile 'com.github.z3896823:PanelList:v1.x.x' //请点击上方的release标签，使用最新版本号
+	        compile 'com.github.z3896823:PanelList:v1.x.x' //please click the release tag up ahead to fill in the latest version 
 	}
 ```
 
-# 使用说明
 
-使用本库时，开发者只需要关心中间content部分的adapter怎么写，其余的表头部分只需要将数据传进去就可以了。剩下的数据填充及同步滑动部分将由本库自动完成。
-而且表头每个item的高度（纵向表头）和宽度（横向表头）将跟随开发者content部分的item大小自动适应。
 
-### xml文件布局示例：
+## Get Started
+
+### 1、xml files
+
 ```xml
+<!--activity view-->
 <sysu.zyb.panellistlibrary.PanelListLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -81,22 +64,36 @@ dependencies {
 </sysu.zyb.panellistlibrary.PanelListLayout>
 ```
 
+```xml
+<!--item view.use CheckableLinearLayout if you want multiselection.-->
+<!--even if you don`t, I still suggest you use this viewgroup-->
+<sysu.zyb.panellistlibrary.CheckableLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:gravity="center">
 
-### MyPanelListAdapter
+  <!--build your item views here-->
+</sysu.zyb.panellistlibrary.CheckableLinearLayout>
+```
+
+### 2、adapter
+
 ```java
 public class MyPanelListAdapter extends PanelListAdapter {
 
     private Context context;
-
     private ListView lv_content;
     private int contentResourceId;
     private List<Map<String, String>> contentList = new ArrayList<>();
 
     /**
      * constructor
-     *
      */
-    public MyPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content, int contentResourceId, List<Map<String,String>> contentList) {
+    public MyPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content,
+                              int contentResourceId, List<Map<String,String>> contentList) {
         super(context, pl_root, lv_content);
         this.context = context;
         this.lv_content = lv_content;
@@ -105,28 +102,15 @@ public class MyPanelListAdapter extends PanelListAdapter {
     }
 
     /**
-     * 1. 自行编写Adapter并进行setAdapter
-     * 2. 调用父类方法进行同步控制
+     * return the content adapter
      */
     @Override
-    public void initAdapter() {
-        setTitle("test");//设置表的标题
-        setTitleHeight(100);//设置表标题的高
-        setTitleWidth(150);//设置表标题的宽
-        setRowDataList(getRowDataList());//设置横向表头的内容
-
-        // set自己写的contentAdapter
-        ContentAdapter contentAdapter = new ContentAdapter(context,contentResourceId,contentList);
-        lv_content.setAdapter(contentAdapter);
-      
-		setInitPosition(88);//指定初始位置。该方法public，可在Activity中调用
-        super.initAdapter();//一定要在设置完后再调用父类的方法
+    protected BaseAdapter getContentAdapter() {
+        return new ContentAdapter(context,contentResourceId,contentList);
     }
 
     /**
-     * 重写该方法，返回数据的个数即可
-     *
-     * @return size of content
+     * return size of content data
      */
     @Override
     protected int getCount() {
@@ -134,97 +118,109 @@ public class MyPanelListAdapter extends PanelListAdapter {
     }
 
     /**
-     * content部分的adapter
+     * content adapter, nothing different from a listview adapter
      */
     private class ContentAdapter extends ArrayAdapter {
-    //略
+		//your content adapter
     }
 }
 ```
 
-### MainActivity.java
+### 3、activity
+
 ```java
-        MyPanelListAdapter adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
-        adapter.initAdapter();
+public class MainActivity extends AppCompatActivity {
+
+    private PanelListLayout pl_root;
+    private ListView lv_content;
+    private MyPanelListAdapter adapter;
+    private List<Map<String, String>> contentList = new ArrayList<>();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        initView();
+        initContentDataList();
+
+        adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
+        adapter.setInitPosition(10);
+        adapter.setSwipeRefreshEnabled(true);
+        //set anything you want here, then call pl_root.setAdapter() to get everything done
+        pl_root.setAdapter(adapter);
+    }
+}
 ```
 
-# APIs：
+
+
+## APIs
 
 ```java
-    /**
-     * 设置表的标题
-     *
-     */
-    setTitle(String title);
+  
+    public void setTitle(String title);
+
+    public void setTitleBackgroundResource(int resourceId);
+
+    public void setTitleWidth(int titleWidth) ;
+
+    public void setTitleHeight(int titleHeight);
+
+    public void setRowDataList(List<String> rowDataList);
+
+    public void setColumnDataList(List<String> columnDataList);
+
+    public void setRowDivider(Drawable rowDivider) ;
+
+    public void setColumnDivider(Drawable columnDivider);
+
+    public void setColumnColor(String columnColor);
+
+    public void setTitleColor(String titleColor);
+
+    public void setRowColor(String rowColor) ;
+
+    public void setColumnAdapter(BaseAdapter columnAdapter);
 
     /**
-     * 设置表头的宽度
-     *
+     * if you want the 100th data to be your first data on screen, pass 100
      */
-    setTitleWidth(int titleWidth);
+    public void setInitPosition(int initPosition);
+
+    public ListView getContentListView();
+
+    public ListView getColumnListView() ;
+
+    public LinearLayout getRowLayout();
 
     /**
-     * 设置表头的高度
-     *
+     * unless you call this method and pass true, the swiperefresh is disabled
      */
-    setTitleHeight(int titleHeight);
+    public void setSwipeRefreshEnabled(boolean bool);
 
-    /**
-     * 设置横向表头的标题（！！必须调用！！）
-     *
-     * @param rowDataList data list of row layout, must be a List<String> object.There is no default data for this.
-     */
-    setRowDataList(List<String> rowDataList);
+    public void setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) ;
 
-    /**
-     * 设置纵向表头的内容
-     *
-     * @param columnDataList data list of column layout, must be a List<String> object. if you don`t call this method, the default column list will be used, which is 1,2,3,4...
-     */
-    setColumnDataList(List<String> columnDataList);
+    public SwipeRefreshLayout getSwipeRefreshLayout();
+```
 
-    /**
-     * 设置纵向表头的背景色
-     *
-     * color格式形如『#607D8B』，下同
-     */
-    setColumnColor(String columnColor);
 
-    /**
-     * 设置标题的背景色
-     *
-     */
-    setTitleColor(String titleColor);
 
-    /**
-     * 设置横向表头的背景色
-     *
-     */
-    setRowColor(String rowColor);
+## License
+
+   ```
+    Copyright 2017 z3896823(hbdxzyb)
     
-	/**
-     * 设置是否开启下拉刷新（默认关闭）
-     *
-     */
-    setSwipeRefreshEnabled(boolean bool)；
-
-    /**
-     * 设置下拉刷新的监听
-     *
-     * 该方法为public，你可以在Activity或Adapter中的任何地方调用此方法设置监听器
-     */
-    setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener listener)
-
-	/**
-     * 设置content的初始position
-     * 
-     * 比如当你打开页面时不想显示第一条数据，而想显示第300条数据，那么传入300即可
-     */
-    setInitPosition(int initPosition)；
-```
-
-
-
-
-
-
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+       http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    
+   ```

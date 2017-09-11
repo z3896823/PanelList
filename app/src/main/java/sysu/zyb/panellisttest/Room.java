@@ -9,8 +9,6 @@ import java.util.Map;
  *     e-mail : hbdxzyb@hotmail.com
  *     time   : 2017/9/9
  *     desc   :
- *     经过查阅API，Java的Date类基本被废弃，取而代之的是Calendar类，但该类的很多变量是static
- *     不适合作为存储日期的对象。因此决定用String变量存储日期，然后iu使用Calendar的静态方法从String中提取信息
  *     version: 1.0
  * </pre>
  */

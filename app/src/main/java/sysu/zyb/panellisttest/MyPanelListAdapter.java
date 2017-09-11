@@ -129,6 +129,7 @@ public class MyPanelListAdapter extends PanelListAdapter {
             } else {
                 view.setBackgroundColor(context.getResources().getColor(R.color.colorDeselected));
             }
+            Log.d("ybz", "getView: itemview = "+ view.toString());
 
             return view;
         }

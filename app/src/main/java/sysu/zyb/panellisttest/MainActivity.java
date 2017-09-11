@@ -1,5 +1,6 @@
 package sysu.zyb.panellisttest;
 
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setInitPosition(10);
         adapter.setSwipeRefreshEnabled(true);
         adapter.setRowDataList(getRowDataList());
+        adapter.setTitle("example");
         adapter.setOnRefreshListener(new CustomRefreshListener());
         pl_root.setAdapter(adapter);
     }
@@ -67,10 +69,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.id_menu_delete:
                 removeData();
                 break;
+            case R.id.id_menu_next:
+                Intent intent = new Intent(MainActivity.this, RoomActivity.class);
+                startActivity(intent);
+                break;
             default:
                 break;
         }
-        ((ArrayAdapter) (adapter.getLv_content().getAdapter())).notifyDataSetChanged();
+        ((ArrayAdapter) (adapter.getContentListView().getAdapter())).notifyDataSetChanged();
         return true;
     }
 

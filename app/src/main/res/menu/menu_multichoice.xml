@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/id_menu_draw"
-        android:title="绘图"
+        android:title="选中"
         app:showAsAction="always"/>
     <item android:id="@+id/id_menu_selectAll"
         android:title="全选"
