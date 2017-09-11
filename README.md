@@ -12,9 +12,9 @@ Don`t forget to star if it really helps you. ：）
 
 ## DEMO 
 
-[](https://github.com/z3896823/PanelList/blob/master/PanelList_1.gif)
+![](https://github.com/z3896823/PanelList/blob/master/PanelList_1.gif)
 
-[](https://github.com/z3896823/PanelList/blob/master/PanelList_2.gif)
+![](https://github.com/z3896823/PanelList/blob/master/PanelList_2.gif)
 
 ## ChangeLog
 

@@ -12,9 +12,9 @@ PanelList是一个二维表格，主要用于展示大量数据，如酒店订�
 
 ## 示例
 
-[](https://github.com/z3896823/PanelList/blob/master/PanelList1.gif)
+![](https://github.com/z3896823/PanelList/blob/master/PanelList_1.gif)
 
-[](https://github.com/z3896823/PanelList/blob/master/PanelList2.gif)
+![](https://github.com/z3896823/PanelList/blob/master/PanelList_2.gif)
 
 ## 更新日志
 
