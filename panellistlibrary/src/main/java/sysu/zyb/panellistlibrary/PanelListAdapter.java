@@ -517,13 +517,10 @@ public abstract class PanelListAdapter {
         public void onScrollStateChanged(AbsListView view, int scrollState) {
             this.scrollState = scrollState;
             if (scrollState == SCROLL_STATE_IDLE || scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-                View subView = view.getChildAt(0);//?
+                View subView = view.getChildAt(0);
                 if (subView != null && view == lv_content) {
                     int top = subView.getTop();
                     int position = view.getFirstVisiblePosition();
-//                    Log.d("ybz", "onScrollStateChanged: position = "+position);
-//                    Log.d("ybz", "onScrollStateChanged: top = "+top);
-
                     lv_column.setSelectionFromTop(position, top);
                 } else if (subView != null && view == lv_column) {
                     int top = subView.getTop();
@@ -532,7 +529,7 @@ public abstract class PanelListAdapter {
                 }
             }
 
-            // 滑动事件冲突，曲线救国：如果ListView的首条item的position != 0，则将下拉刷新禁用
+            // 滑动事件冲突的解决：如果ListView的首条item的position != 0，即此时不再顶上，则将下拉刷新禁用
             if (swipeRefreshEnable) {
                 if (view.getFirstVisiblePosition() != 0 && swipeRefreshLayout.isEnabled()) {
                     swipeRefreshLayout.setEnabled(false);

@@ -111,21 +111,6 @@ public class RoomPanelListAdapter extends PanelListAdapter {
             viewHolder.tv_6.setText(getText(roomDetail.get(6)));
             viewHolder.tv_7.setBackgroundResource(getBackgroundResource(roomDetail.get(7)));
             viewHolder.tv_7.setText(getText(roomDetail.get(7)));
-//            viewHolder.tv_1.setBackgroundColor(getBackgroundResource(roomDetail.get(1)));
-//            viewHolder.tv_1.setText(getText(roomDetail.get(1)));
-//            viewHolder.tv_2.setBackgroundColor(getBackgroundResource(roomDetail.get(2)));
-//            viewHolder.tv_2.setText(getText(roomDetail.get(2)));
-//            viewHolder.tv_3.setBackgroundColor(getBackgroundResource(roomDetail.get(3)));
-//            viewHolder.tv_3.setText(getText(roomDetail.get(3)));
-//            viewHolder.tv_4.setBackgroundColor(getBackgroundResource(roomDetail.get(4)));
-//            viewHolder.tv_4.setText(getText(roomDetail.get(4)));
-//            viewHolder.tv_5.setBackgroundColor(getBackgroundResource(roomDetail.get(5)));
-//            viewHolder.tv_5.setText(getText(roomDetail.get(5)));
-//            viewHolder.tv_6.setBackgroundColor(getBackgroundResource(roomDetail.get(6)));
-//            viewHolder.tv_6.setText(getText(roomDetail.get(6)));
-//            viewHolder.tv_7.setBackgroundColor(getBackgroundResource(roomDetail.get(7)));
-//            viewHolder.tv_7.setText(getText(roomDetail.get(7)));
-
             return view;
         }
 
@@ -140,25 +125,9 @@ public class RoomPanelListAdapter extends PanelListAdapter {
                 case Room.OUTOFSERVICE:
                     return R.drawable.bg_room_gray_outofservice;
                 default:
-                    Log.d("ybz", "getBackgroundResource: default");
-                    return 100000;
+                    return -1;
             }
         }
-//        int getBackgroundResource(int i){
-//            switch (i){
-//                case Room.AVAILABLE:
-//                    return R.color.white;
-//                case Room.OCCUPIED:
-//                    return R.color.orange;
-//                case Room.RESERVED:
-//                    return R.color.blue;
-//                case Room.OUTOFSERVICE:
-//                    return R.color.gray;
-//                default:
-//                    return 0;
-//            }
-//        }
-
 
         String getText(int i){
             switch (i){
@@ -171,7 +140,7 @@ public class RoomPanelListAdapter extends PanelListAdapter {
                 case Room.OUTOFSERVICE:
                     return "维修中";
                 default:
-                    return " ";
+                    return null;
             }
         }
 

@@ -8,11 +8,11 @@
         app:showAsAction="never"/>
     <item
         android:id="@+id/id_menu_delete"
-        android:title="delete No.10"
+        android:title="delete item"
         app:showAsAction="never"/>
     <item
         android:id="@+id/id_menu_insert"
-        android:title="insert No.10"
+        android:title="insert item"
         app:showAsAction="never"/>
     <item
         android:id="@+id/id_menu_next"

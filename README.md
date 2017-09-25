@@ -8,7 +8,7 @@ If you have any problem using this library, please feel free to contact me via h
 
 Don`t forget to star if it really helps you. ：）
 
-[Introduction in Chinese](https://github.com/z3896823/PanelList/blob/master/README_CHS.md)
+[中文文档](https://github.com/z3896823/PanelList/blob/master/README_CHS.md)
 
 ## DEMO 
 

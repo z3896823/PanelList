@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Map<String, String>> contentList = new ArrayList<>();
 
+    private List<String> columnList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +43,15 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
         initContentDataList();
+        initColumnDataList();
+
 
         adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
-        adapter.setInitPosition(10);
+//        adapter.setInitPosition(10);
         adapter.setSwipeRefreshEnabled(true);
         adapter.setRowDataList(getRowDataList());
         adapter.setTitle("example");
+        adapter.setColumnDataList(columnList);
         adapter.setOnRefreshListener(new CustomRefreshListener());
         pl_root.setAdapter(adapter);
     }
@@ -76,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
+        initColumnDataList();
         ((ArrayAdapter) (adapter.getContentListView().getAdapter())).notifyDataSetChanged();
+        ((ArrayAdapter) (adapter.getColumnListView().getAdapter())).notifyDataSetChanged();
         return true;
     }
 
@@ -140,6 +147,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initColumnDataList(){
+        columnList = new ArrayList<>(contentList.size());
+        for (int i = 0;i<contentList.size();i++){
+            columnList.add(String.valueOf(i));
+        }
+    }
+
     /**
      * 更新content数据
      */
@@ -170,7 +184,8 @@ public class MainActivity extends AppCompatActivity {
         data.put("5", "插入5");
         data.put("6", "插入6");
         data.put("7", "插入7");
-        contentList.add(10,data);
+        contentList.add(5,data);
+
     }
 
     /**
