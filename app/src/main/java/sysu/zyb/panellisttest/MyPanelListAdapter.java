@@ -3,23 +3,20 @@ package sysu.zyb.panellisttest;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import sysu.zyb.panellistlibrary.PanelListAdapter;
+import sysu.zyb.panellistlibrary.AbstractPanelListAdapter;
 import sysu.zyb.panellistlibrary.PanelListLayout;
 
 /**
@@ -31,9 +28,10 @@ import sysu.zyb.panellistlibrary.PanelListLayout;
  *              开发者可自行定义两个子Adapter
  *     version: 1.0
  * </pre>
+ * @author zyb
  */
 
-public class MyPanelListAdapter extends PanelListAdapter {
+public class MyPanelListAdapter extends AbstractPanelListAdapter {
 
     private Context context;
 
@@ -46,7 +44,7 @@ public class MyPanelListAdapter extends PanelListAdapter {
      *
      * @param context 上下文
      * @param pl_root 根布局（PanelListLayout）
-     * @param lv_content content部分的布局（ListView）
+     * @param lv_content content 部分的布局（ListView）
      * @param contentResourceId content 部分的 item 布局
      * @param contentList content 部分的数据
      */
@@ -67,16 +65,6 @@ public class MyPanelListAdapter extends PanelListAdapter {
     @Override
     protected BaseAdapter getContentAdapter() {
         return new ContentAdapter(context,contentResourceId,contentList);
-    }
-
-    /**
-     * 给该方法添加实现，返回content部分的数据个数
-     *
-     * @return size of content data
-     */
-    @Override
-    protected int getCount() {
-        return contentList.size();
     }
 
     /**
@@ -104,6 +92,7 @@ public class MyPanelListAdapter extends PanelListAdapter {
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             final Map<String, String> data = contentList.get(position);
+            Log.d("ybz-get", "getView: Content getView");
             View view;
             ViewHolder viewHolder;
 

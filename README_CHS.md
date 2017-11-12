@@ -18,6 +18,11 @@ PanelList是一个二维表格，主要用于展示大量数据，如酒店订�
 
 ## 更新日志
 
+-  v1.2.1 — 2017/11/12
+
+​    一些bug修复
+
+
 -  v1.2.0 —2017/09/10
 
 ​    进一步封装，并按照适配器模式对库的使用方法做了大幅度修改，以符合开发者的使用习惯。
@@ -102,6 +107,9 @@ dependencies {
 ### 2、adapter
 
 ```java
+/**
+ * 比你想的还要简单的Adapter
+ */
 public class MyPanelListAdapter extends PanelListAdapter {
 
     private Context context;
@@ -129,13 +137,6 @@ public class MyPanelListAdapter extends PanelListAdapter {
         return new ContentAdapter(context,contentResourceId,contentList);
     }
 
-    /**
-     * return size of content data
-     */
-    @Override
-    protected int getCount() {
-        return contentList.size();
-    }
 
     /**
      * content adapter, nothing different from a listview adapter
@@ -250,13 +251,23 @@ public class MainActivity extends AppCompatActivity {
      */
     public ListView getContentListView();
 
+	/**
+	 * 返回中间内容部分的Adapter
+	 */
+	public BaseAdapter getContentAdapter();
+
     /**
      * 返回左边表头的ListView
      */
     public ListView getColumnListView() ;
 
+	/**
+	 * 返回左边表头的Adapter
+	 */
+	public BaseAdapter getColumnAdapter();
+
     /**
-     * 返回上访表头的最外层布局
+     * 返回上方表头的最外层布局
      */
     public LinearLayout getRowLayout();
 

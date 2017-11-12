@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import android.widget.Toast;
 import java.util.List;
 import java.util.Map;
 
-import sysu.zyb.panellistlibrary.PanelListAdapter;
+import sysu.zyb.panellistlibrary.AbstractPanelListAdapter;
 import sysu.zyb.panellistlibrary.PanelListLayout;
 
 /**
@@ -30,7 +29,7 @@ import sysu.zyb.panellistlibrary.PanelListLayout;
  * </pre>
  */
 
-public class RoomPanelListAdapter extends PanelListAdapter {
+public class RoomPanelListAdapter extends AbstractPanelListAdapter {
 
     private Context context;
     private List<Room> roomList;
@@ -47,11 +46,6 @@ public class RoomPanelListAdapter extends PanelListAdapter {
     @Override
     protected BaseAdapter getContentAdapter() {
         return new ContentAdapter(context,resourceId,roomList);
-    }
-
-    @Override
-    protected int getCount() {
-        return roomList.size();
     }
 
     private class ContentAdapter extends ArrayAdapter {

@@ -2,7 +2,6 @@ package sysu.zyb.panellistlibrary;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 /**
@@ -17,13 +16,13 @@ import android.widget.RelativeLayout;
 
 public class PanelListLayout extends RelativeLayout {
 
-    private PanelListAdapter adapter;
+    private AbstractPanelListAdapter adapter;
 
-    public PanelListAdapter getAdapter() {
+    public AbstractPanelListAdapter getAdapter() {
         return adapter;
     }
 
-    public void setAdapter(PanelListAdapter adapter) {
+    public void setAdapter(AbstractPanelListAdapter adapter) {
         this.adapter = adapter;
         adapter.initAdapter();
     }

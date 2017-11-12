@@ -6,7 +6,7 @@ It could be used to show hotel reservation data (like the demo below), stock dat
 
 If you have any problem using this library, please feel free to contact me via hbdxzyb@hotmail.com.
 
-Don`t forget to star if it really helps you. ：）
+Don`t forget to star if it helps you. ：）
 
 [中文文档](https://github.com/z3896823/PanelList/blob/master/README_CHS.md)
 
@@ -22,6 +22,7 @@ Don`t forget to star if it really helps you. ：）
 - v1.1.1 (20170723) — add swipe refresh
 - v1.1.1.1 (20170812) — add an API to set initial position
 - v1.2.0 (20170911) — Big change! Now you can set everything in your activity and call setAdapter() to finish your job. And also some bug fixed.
+- v1.2.1(20171112) — Some bug fixed
 
 ## Installing
 Step 1. add this to your project build.gradle
@@ -82,6 +83,9 @@ dependencies {
 ### 2、adapter
 
 ```java
+/**
+ * easier than you can imagine
+ */
 public class MyPanelListAdapter extends PanelListAdapter {
 
     private Context context;
@@ -109,13 +113,6 @@ public class MyPanelListAdapter extends PanelListAdapter {
         return new ContentAdapter(context,contentResourceId,contentList);
     }
 
-    /**
-     * return size of content data
-     */
-    @Override
-    protected int getCount() {
-        return contentList.size();
-    }
 
     /**
      * content adapter, nothing different from a listview adapter
@@ -188,14 +185,19 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setInitPosition(int initPosition);
 
+
     public ListView getContentListView();
 
-    public ListView getColumnListView() ;
+    public BaseAdapter getContentAdapter();
+
+    public ListView getColumnListView();
+
+    public BaseAdapter getColumnAdapter();
 
     public LinearLayout getRowLayout();
 
     /**
-     * unless you call this method and pass true, the swiperefresh is disabled
+     * default state of swiperefresh is disabled, you can call this method and 		 * pass true to enable it
      */
     public void setSwipeRefreshEnabled(boolean bool);
 

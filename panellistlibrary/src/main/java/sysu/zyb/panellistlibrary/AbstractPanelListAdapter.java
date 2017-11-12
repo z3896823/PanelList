@@ -35,9 +35,10 @@ import static android.view.View.SCROLLBAR_POSITION_RIGHT;
  *     desc   : 总的adapterController
  *     version: 1.0
  * </pre>
+ * @author zyb
  */
 
-public abstract class PanelListAdapter {
+public abstract class AbstractPanelListAdapter {
 
     private static final String TAG = "ybz";
 
@@ -79,7 +80,14 @@ public abstract class PanelListAdapter {
     private Drawable rowDivider;
     private Drawable columnDivider;
 
-    private boolean swipeRefreshEnable = false;//默认关闭下拉刷新
+    /**
+     * 默认关闭下拉刷新
+     */
+    private boolean swipeRefreshEnable = false;
+    /**
+     * 标志位，是否使用了默认的column实现
+     */
+    private boolean defaultColumn = false;
 
     private int initPosition = 0;//列表显示的初始值，默认第一条数据显示在最上面
 
@@ -100,7 +108,7 @@ public abstract class PanelListAdapter {
      *
      * @param lv_content 内容的ListView
      */
-    public PanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content) {
+    public AbstractPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content) {
         this.context = context;
         this.pl_root = pl_root;
         this.lv_content = lv_content;
@@ -290,6 +298,11 @@ public abstract class PanelListAdapter {
 
     //endregion
 
+    /**
+     * 在该方法中返回contentList的adapter
+     *
+     * @return content部分的adapter
+     */
     protected abstract BaseAdapter getContentAdapter();
 
     /**
@@ -308,8 +321,36 @@ public abstract class PanelListAdapter {
         lv_column.setOnScrollListener(verticalScrollListener);
     }
 
-    // must be override
-    protected abstract int getCount();
+    /**
+     * 更新ContentList数据后需要调用此方法来刷新列表
+     *
+     * 该方法会判断是否使用了默认的纵向表头，如果是，则自动更新表头
+     * 如果不是，则不更新纵向表头，交给开发者自己去更新
+     * 开发者可以调用{@link #getColumnAdapter()}以获得columnAdapter
+     */
+    public void notifyDataSetChanged(){
+        // 先刷新lv_content的数据，然后根据判断决定是否要刷新表头的数据
+        contentAdapter.notifyDataSetChanged();
+        if (defaultColumn){
+            // 最好是让columnList跟着contentList变，不要new对象
+            // 所以要获得contentList的新长度,即要获得contentList对象
+            int newLength = contentAdapter.getCount();
+            if (newLength < columnDataList.size()){
+                //删除了部分数据
+                //从尾部开始删除元素，直到长度和contentList相同
+                while (columnDataList.size() != newLength){
+                    columnDataList.remove(columnDataList.size()-1);
+                }
+            } else {
+                //增加了部分数据
+                while (columnDataList.size() != newLength){
+                    columnDataList.add(String.valueOf(columnDataList.size()+1));
+                }
+            }
+            columnAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     /**
      * 核心代码：
@@ -355,7 +396,6 @@ public abstract class PanelListAdapter {
         lp_mhsv_row.addRule(RelativeLayout.END_OF, tv_title.getId());
         lp_mhsv_row.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         pl_root.addView(mhsv_row, lp_mhsv_row);
-
 
         // 3. column （ListView --> PanelListLayout）
         lv_column = new ListView(context);
@@ -467,13 +507,17 @@ public abstract class PanelListAdapter {
 
     /**
      * 返回纵向表头的数据列表
+     * 如果开发者没有自定义纵向表头，则生成默认的表头，其内容为1~n，并且将标志位置true
+     * 方便{@link #notifyDataSetChanged()}方法作出判断
+     * 如果开发者自定义了纵向表头，则直接返回其自定义的内容
      *
      * @return data list of column ListView
      */
     private List<String> getColumnDataList() {
         if (columnDataList == null) {
+            defaultColumn = true;
             columnDataList = new ArrayList<>();
-            for (int i = 1; i <= getCount(); i++) {
+            for (int i = 1; i <= getContentAdapter().getCount(); i++) {
                 columnDataList.add(String.valueOf(i));
             }
         }
@@ -485,7 +529,7 @@ public abstract class PanelListAdapter {
      *
      * @return adapter of column ListView
      */
-    private BaseAdapter getColumnAdapter() {
+    public BaseAdapter getColumnAdapter() {
         if (columnAdapter == null) {
             columnAdapter = new ColumnAdapter(context, android.R.layout.simple_list_item_1, getColumnDataList());
         }

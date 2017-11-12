@@ -3,15 +3,12 @@ package sysu.zyb.panellisttest;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import sysu.zyb.panellistlibrary.PanelListAdapter;
+import sysu.zyb.panellistlibrary.AbstractPanelListAdapter;
 import sysu.zyb.panellistlibrary.PanelListLayout;
 
 /**
@@ -29,7 +26,7 @@ public class RoomActivity extends AppCompatActivity {
     private static final String TAG = "ybz";
 
     private PanelListLayout pl_root;
-    private PanelListAdapter adapter;
+    private AbstractPanelListAdapter adapter;
     private ListView lv_content;
     private List<Room> roomList = new ArrayList<>();
 

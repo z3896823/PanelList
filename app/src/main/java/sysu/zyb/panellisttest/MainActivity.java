@@ -1,5 +1,7 @@
 package sysu.zyb.panellisttest;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,9 @@ import java.util.Map;
 import sysu.zyb.panellistlibrary.PanelListLayout;
 
 
+/**
+ * @author zyb
+ */
 public class MainActivity extends AppCompatActivity {
 
     private PanelListLayout pl_root;
@@ -43,17 +48,22 @@ public class MainActivity extends AppCompatActivity {
 
         initView();
         initContentDataList();
-        initColumnDataList();
-
 
         adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
-//        adapter.setInitPosition(10);
+        adapter.setInitPosition(10);
         adapter.setSwipeRefreshEnabled(true);
         adapter.setRowDataList(getRowDataList());
         adapter.setTitle("example");
-        adapter.setColumnDataList(columnList);
         adapter.setOnRefreshListener(new CustomRefreshListener());
         pl_root.setAdapter(adapter);
+
+        // 注意：
+        // 如果你决定自己实现自己的Column，而不是使用默认的1，2，3。。。
+        // 请注意更新contentList时手动更新columnList
+
+        ActivityManager manager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+        int heapSize = manager.getMemoryClass();
+        Log.d("ybz", "memory limit: "+ heapSize);
     }
 
     @Override
@@ -81,9 +91,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
-        initColumnDataList();
-        ((ArrayAdapter) (adapter.getContentListView().getAdapter())).notifyDataSetChanged();
-        ((ArrayAdapter) (adapter.getColumnListView().getAdapter())).notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         return true;
     }
 
@@ -108,9 +116,10 @@ public class MainActivity extends AppCompatActivity {
     public class CustomRefreshListener implements SwipeRefreshLayout.OnRefreshListener{
         @Override
         public void onRefresh() {
-            // do sth here, example:
+            // you can do sth here, for example: make a toast:
             Toast.makeText(MainActivity.this, "custom SwipeRefresh listener", Toast.LENGTH_SHORT).show();
-            adapter.getSwipeRefreshLayout().setRefreshing(false);// don`t forget to call this
+            // don`t forget to call this
+            adapter.getSwipeRefreshLayout().setRefreshing(false);
         }
     }
 
@@ -134,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
      * 初始化content数据
      */
     private void initContentDataList() {
-        for (int i = 1; i < 500; i++) {
+        for (int i = 1; i <= 50; i++) {
             Map<String, String> data = new HashMap<>();
             data.put("1", "第" + i + "行第一个");
             data.put("2", "第" + i + "行第二个");
