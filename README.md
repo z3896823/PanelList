@@ -45,6 +45,10 @@ dependencies {
 
 ## Get Started
 
+# Attention:
+
+I`m so sorry to say that something went wrong with my jitpack, you may not be able to use this library with a gradle dependency for now, but you can still download source code and add it to your project manually. Im still working on it.
+
 ### 1、xml files
 
 ```xml
