@@ -311,6 +311,14 @@ public abstract class AbstractPanelListAdapter {
 
         contentAdapter = getContentAdapter();
 
+        if (contentAdapter == null){
+            try {
+                throw new Exception("content adapter can NOT be null");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         reorganizeViewGroup();
 
         mhsv_row.setOnHorizontalScrollListener(horizontalScrollListener);

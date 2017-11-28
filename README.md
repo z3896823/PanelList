@@ -22,7 +22,7 @@ Don`t forget to star if it helps you. ：）
 - v1.1.1 (20170723) — add swipe refresh
 - v1.1.1.1 (20170812) — add an API to set initial position
 - v1.2.0 (20170911) — Big change! Now you can set everything in your activity and call setAdapter() to finish your job. And also some bug fixed.
-- v1.2.1(20171112) — Some bug fixed
+- v1.2.3(20171112) — Some bug fixed
 
 ## Installing
 Step 1. add this to your project build.gradle
@@ -44,10 +44,6 @@ dependencies {
 
 
 ## Get Started
-
-# Attention:
-
-I`m so sorry to say that something went wrong with my jitpack, you may not be able to use this library with a gradle dependency for now, but you can still download source code and add it to your project manually. Im still working on it.
 
 ### 1、xml files
 
@@ -90,7 +86,7 @@ I`m so sorry to say that something went wrong with my jitpack, you may not be ab
 /**
  * easier than you can imagine
  */
-public class MyPanelListAdapter extends PanelListAdapter {
+public class MyPanelListAdapter extends AbstractPanelListAdapter {
 
     private Context context;
     private ListView lv_content;
@@ -150,6 +146,8 @@ public class MainActivity extends AppCompatActivity {
         adapter.setSwipeRefreshEnabled(true);
         //set anything you want here, then call pl_root.setAdapter() to get everything done
         pl_root.setAdapter(adapter);
+        // don`t forget to update column manually if you are using a 
+        // custom column data instead of the default 1,2,3...
     }
 }
 ```

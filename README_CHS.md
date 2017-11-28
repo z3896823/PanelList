@@ -18,7 +18,7 @@ PanelList是一个二维表格，主要用于展示大量数据，如酒店订�
 
 ## 更新日志
 
--  v1.2.1 — 2017/11/12
+-  v1.2.3 — 2017/11/12
 
 ​    一些bug修复
 
@@ -69,10 +69,6 @@ dependencies {
 使用本库时，开发者只需要关心中间content部分的adapter怎么写，其余的表头部分只需要将数据传进去就可以了。剩下的数据填充及同步滑动部分将由本库自动完成。
 而且表头每个item的高度（纵向表头）和宽度（横向表头）将跟随开发者content部分的item大小自动适应。
 
-# 注意：
-
-非常抱歉，jitpack出了点问题，暂时不能使用gradle引用该项目了，但你仍然可以下载源码，然后手动导入你的项目作为依赖。目前正在解决中，带来不便还请见谅。
-
 ### 1、xml files
 
 ```xml
@@ -112,9 +108,9 @@ dependencies {
 
 ```java
 /**
- * 比你想的还要简单的Adapter
+ * Adapter
  */
-public class MyPanelListAdapter extends PanelListAdapter {
+public class MyPanelListAdapter extends AbstractPanelListAdapter {
 
     private Context context;
     private ListView lv_content;
@@ -174,6 +170,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.setSwipeRefreshEnabled(true);
         //set anything you want here, then call pl_root.setAdapter() to get everything done
         pl_root.setAdapter(adapter);
+        // 注意：
+        // 如果你决定实现自己的Column，而不是使用默认的1，2，3。。。
+        // 请注意更新contentList时记得顺带更新columnList
     }
 }
 ```

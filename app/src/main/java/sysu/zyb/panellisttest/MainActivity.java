@@ -60,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
         // 注意：
         // 如果你决定自己实现自己的Column，而不是使用默认的1，2，3。。。
         // 请注意更新contentList时手动更新columnList
-
-        ActivityManager manager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-        int heapSize = manager.getMemoryClass();
-        Log.d("ybz", "memory limit: "+ heapSize);
     }
 
     @Override
