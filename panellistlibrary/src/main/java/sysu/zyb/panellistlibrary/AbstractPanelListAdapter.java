@@ -35,6 +35,7 @@ import static android.view.View.SCROLLBAR_POSITION_RIGHT;
  *     desc   : 总的adapterController
  *     version: 1.0
  * </pre>
+ *
  * @author zyb
  */
 
@@ -173,7 +174,6 @@ public abstract class AbstractPanelListAdapter {
 
     /**
      * 横向表头的分割线
-     *
      */
     public void setRowDivider(Drawable rowDivider) {
         this.rowDivider = rowDivider;
@@ -181,7 +181,6 @@ public abstract class AbstractPanelListAdapter {
 
     /**
      * 纵向表头的分割线
-     *
      */
     public void setColumnDivider(Drawable columnDivider) {
         this.columnDivider = columnDivider;
@@ -258,7 +257,7 @@ public abstract class AbstractPanelListAdapter {
      *
      * @return a CheckableLinearLayout
      */
-    public LinearLayout getRowLayout(){
+    public LinearLayout getRowLayout() {
         return ll_row;
     }
 
@@ -323,28 +322,28 @@ public abstract class AbstractPanelListAdapter {
 
     /**
      * 更新ContentList数据后需要调用此方法来刷新列表
-     *
+     * <p>
      * 该方法会判断是否使用了默认的纵向表头，如果是，则自动更新表头
      * 如果不是，则不更新纵向表头，交给开发者自己去更新
      * 开发者可以调用{@link #getColumnAdapter()}以获得columnAdapter
      */
-    public void notifyDataSetChanged(){
+    public void notifyDataSetChanged() {
         // 先刷新lv_content的数据，然后根据判断决定是否要刷新表头的数据
         contentAdapter.notifyDataSetChanged();
-        if (defaultColumn){
+        if (defaultColumn) {
             // 最好是让columnList跟着contentList变，不要new对象
             // 所以要获得contentList的新长度,即要获得contentList对象
             int newLength = contentAdapter.getCount();
-            if (newLength < columnDataList.size()){
+            if (newLength < columnDataList.size()) {
                 //删除了部分数据
                 //从尾部开始删除元素，直到长度和contentList相同
-                while (columnDataList.size() != newLength){
-                    columnDataList.remove(columnDataList.size()-1);
+                while (columnDataList.size() != newLength) {
+                    columnDataList.remove(columnDataList.size() - 1);
                 }
             } else {
                 //增加了部分数据
-                while (columnDataList.size() != newLength){
-                    columnDataList.add(String.valueOf(columnDataList.size()+1));
+                while (columnDataList.size() != newLength) {
+                    columnDataList.add(String.valueOf(columnDataList.size() + 1));
                 }
             }
             columnAdapter.notifyDataSetChanged();
@@ -412,7 +411,7 @@ public abstract class AbstractPanelListAdapter {
         mhsv_content.addView(lv_content);//因为 lv_content 在 xml 文件中已经设置了 layout 为 match_parent，所以这里add时不需要再加 LayoutParameter 对象
         mhsv_content.setOverScrollMode(View.OVER_SCROLL_NEVER);//去除滑动到边缘时出现的阴影
         RelativeLayout.LayoutParams lp_mhsv_content = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        if (swipeRefreshLayout == null){
+        if (swipeRefreshLayout == null) {
             swipeRefreshLayout = new SwipeRefreshLayout(context);
         }
         swipeRefreshLayout.addView(mhsv_content, lp_mhsv_content);
@@ -430,7 +429,7 @@ public abstract class AbstractPanelListAdapter {
         pl_root.post(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "post--lv_content = "+ lv_content.toString());
+                Log.d(TAG, "post--lv_content = " + lv_content.toString());
 //                ll_contentItem = (LinearLayout) lv_content.getChildAt(lv_content.getFirstVisiblePosition());//获得content的第一个可见item
                 ll_contentItem = (LinearLayout) lv_content.getChildAt(0);//获得content的第一个可见item
                 initColumnLayout();
@@ -488,7 +487,7 @@ public abstract class AbstractPanelListAdapter {
 
     /**
      * 返回横向表头的内容列表
-     *
+     * <p>
      * 如果设置了自定义的表头内容，则直接返回引用
      * 如果用户没设置，则根据传进来的count数生成一个默认表头
      */
