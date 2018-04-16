@@ -18,6 +18,12 @@ PanelList是一个二维表格，主要用于展示大量数据，如酒店订�
 
 ## 更新日志
 
+-  v1.3.0 — 2018/04/16
+
+   对于最基础的使用提供了 adapter 的默认实现，方便新人快速上手（个性化的使用请参考 demo 中的 RoomActivity.java)。
+
+   修复了一些 bug
+
 -  v1.2.3 — 2017/11/12
 
 ​    一些bug修复
@@ -43,11 +49,19 @@ PanelList是一个二维表格，主要用于展示大量数据，如酒店订�
 
 - v1.1 — 2017/05/23
 
-​    v1.1版本相对初版进行了相对更高度的封装，大大降低了开发者的使用门槛，使得开发者可以像用ListView一样使用      PanelList。
+​    v1.1版本相对初版进行了相对更高度的封装，大大降低了开发者的使用门槛，使得开发者可以像用ListView一样使用PanelList。
 ​    同时，增加了很多个性化接口，供开发者按照自己的需求改变PanelList的效果。
 
+# 注意
+
+该库会引起输出如下错误信息：
+
+> requestLayout() improperly called by android.widget.ListView{168a808 VFED..C.. ......ID 0,100-150,1700 #f} during layout: running second layout pass
+
+经过查询似乎是ListView 的 FastScroll功能的官方 bug。经过测试，该错误信息**并不会**导致任何功能或性能问题，就是会稍微污染控制台，请知悉。暂无解决办法，抱歉。
 
 # 导入
+
 Step 1. 在project的build.gradle文件中添加
 ```gradle
 allprojects {
@@ -89,65 +103,7 @@ dependencies {
 </sysu.zyb.panellistlibrary.PanelListLayout>
 ```
 
-```xml
-<!--item view.use CheckableLinearLayout if you want multiselection.-->
-<!--even if you don`t, I still suggest you use this viewgroup-->
-<sysu.zyb.panellistlibrary.CheckableLinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:gravity="center">
-
-  <!--build your item views here-->
-</sysu.zyb.panellistlibrary.CheckableLinearLayout>
-```
-
-### 2、adapter
-
-```java
-/**
- * Adapter
- */
-public class MyPanelListAdapter extends AbstractPanelListAdapter {
-
-    private Context context;
-    private ListView lv_content;
-    private int contentResourceId;
-    private List<Map<String, String>> contentList = new ArrayList<>();
-
-    /**
-     * constructor
-     */
-    public MyPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content,
-                              int contentResourceId, List<Map<String,String>> contentList) {
-        super(context, pl_root, lv_content);
-        this.context = context;
-        this.lv_content = lv_content;
-        this.contentResourceId = contentResourceId;
-        this.contentList = contentList;
-    }
-
-    /**
-     * return the content adapter
-     */
-    @Override
-    protected BaseAdapter getContentAdapter() {
-        return new ContentAdapter(context,contentResourceId,contentList);
-    }
-
-
-    /**
-     * content adapter, nothing different from a listview adapter
-     */
-    private class ContentAdapter extends ArrayAdapter {
-		//your content adapter
-    }
-}
-```
-
-### 3、activity
+### 2、activity
 
 ```java
 public class MainActivity extends AppCompatActivity {
@@ -163,16 +119,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initView();
-        initContentDataList();
 
-        adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
+        initRowDataList();
+        initContentDataList();
+        initItemWidthList();
+
+        adapter = new AbstractPanelListAdapter(this,pl_root,lv_content) {
+            @Override
+            protected BaseAdapter getContentAdapter() {
+                return null;
+            }
+        };
         adapter.setInitPosition(10);
         adapter.setSwipeRefreshEnabled(true);
-        //set anything you want here, then call pl_root.setAdapter() to get everything done
+        adapter.setRowDataList(rowDataList);
+        adapter.setTitle("example");
+        adapter.setOnRefreshListener(new CustomRefreshListener());
+        adapter.setContentDataList(contentList);
+        adapter.setItemWidthList(itemWidthList);
+        adapter.setItemHeight(40);
         pl_root.setAdapter(adapter);
+
         // 注意：
-        // 如果你决定实现自己的Column，而不是使用默认的1，2，3。。。
-        // 请注意更新contentList时记得顺带更新columnList
+        // 如果你决定自己实现自己的Column，而不是使用默认的1，2，3。。。
+        // 请注意更新contentList时手动更新columnList
     }
 }
 ```

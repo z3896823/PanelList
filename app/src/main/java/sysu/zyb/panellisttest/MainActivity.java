@@ -1,7 +1,5 @@
 package sysu.zyb.panellisttest;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,15 +13,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import sysu.zyb.panellistlibrary.AbstractPanelListAdapter;
 import sysu.zyb.panellistlibrary.PanelListLayout;
 
 
@@ -35,11 +33,13 @@ public class MainActivity extends AppCompatActivity {
     private PanelListLayout pl_root;
     private ListView lv_content;
 
-    private MyPanelListAdapter adapter;
+    private AbstractPanelListAdapter adapter;
 
-    private List<Map<String, String>> contentList = new ArrayList<>();
+    private List<List<String>> contentList = new ArrayList<>();
 
-    private List<String> columnList;
+    private List<Integer> itemWidthList = new ArrayList<>();
+
+    private List<String> rowDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +47,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initView();
-        initContentDataList();
 
-        adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
+        initRowDataList();
+        initContentDataList();
+        initItemWidthList();
+
+        adapter = new AbstractPanelListAdapter(this,pl_root,lv_content) {
+            @Override
+            protected BaseAdapter getContentAdapter() {
+                return null;
+            }
+        };
         adapter.setInitPosition(10);
         adapter.setSwipeRefreshEnabled(true);
-        adapter.setRowDataList(getRowDataList());
+        adapter.setRowDataList(rowDataList);
         adapter.setTitle("example");
         adapter.setOnRefreshListener(new CustomRefreshListener());
+        adapter.setContentDataList(contentList);
+        adapter.setItemWidthList(itemWidthList);
+        adapter.setItemHeight(40);
         pl_root.setAdapter(adapter);
 
         // 注意：
@@ -93,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
 
-        pl_root = (PanelListLayout) findViewById(R.id.id_pl_root);
-        lv_content = (ListView) findViewById(R.id.id_lv_content);
+        pl_root = findViewById(R.id.id_pl_root);
+        lv_content = findViewById(R.id.id_lv_content);
 
         //设置listView为多选模式，长按自动触发
         lv_content.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -123,8 +134,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @return List<String>
      */
-    private List<String> getRowDataList(){
-        List<String> rowDataList = new ArrayList<>();
+    private void initRowDataList(){
         rowDataList.add("第一列");
         rowDataList.add("第二列");
         rowDataList.add("第三列");
@@ -132,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
         rowDataList.add("第五列");
         rowDataList.add("第六列");
         rowDataList.add("第七列");
-        return rowDataList;
     }
 
     /**
@@ -140,39 +149,45 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initContentDataList() {
         for (int i = 1; i <= 50; i++) {
-            Map<String, String> data = new HashMap<>();
-            data.put("1", "第" + i + "行第一个");
-            data.put("2", "第" + i + "行第二个");
-            data.put("3", "第" + i + "行第三个");
-            data.put("4", "第" + i + "行第四个");
-            data.put("5", "第" + i + "行第五个");
-            data.put("6", "第" + i + "行第六个");
-            data.put("7", "第" + i + "行第七个");
+            List<String> data = new ArrayList<>();
+            data.add("第" + i + "行第一个");
+            data.add("第" + i + "行第二个");
+            data.add("第" + i + "行第三个");
+            data.add("第" + i + "行第四个");
+            data.add("第" + i + "行第五个");
+            data.add("第" + i + "行第六个");
+            data.add("第" + i + "行第七个");
             contentList.add(data);
         }
     }
 
-    private void initColumnDataList(){
-        columnList = new ArrayList<>(contentList.size());
-        for (int i = 0;i<contentList.size();i++){
-            columnList.add(String.valueOf(i));
-        }
+    /**
+     * 初始化 content 部分每一个 item 的每个数据的宽度
+     */
+    private void initItemWidthList(){
+        itemWidthList.add(100);
+        itemWidthList.add(100);
+        itemWidthList.add(100);
+        itemWidthList.add(100);
+        itemWidthList.add(100);
+        itemWidthList.add(100);
+        itemWidthList.add(100);
     }
 
     /**
-     * 更新content数据
+     * 更新content数据源
      */
     private void changeContentDataList() {
         contentList.clear();
         for (int i = 1; i < 500; i++) {
-            Map<String, String> data = new HashMap<>();
-            data.put("1", "第" + i + "第一个");
-            data.put("2", "第" + i + "第二个");
-            data.put("3", "第" + i + "第三个");
-            data.put("4", "第" + i + "第四个");
-            data.put("5", "第" + i + "第五个");
-            data.put("6", "第" + i + "第六个");
-            data.put("7", "第" + i + "第七个");
+            List<String> data = new ArrayList<>();
+            data.add("第" + i + "第一个");
+            data.add("第" + i + "第二个");
+            data.add("第" + i + "第三个");
+            data.add("第" + i + "第四个");
+            data.add("第" + i + "第五个");
+            data.add("第" + i + "第六个");
+            data.add("第" + i + "第七个");
             contentList.add(data);
         }
     }
@@ -181,16 +196,15 @@ public class MainActivity extends AppCompatActivity {
      * 插入一个数据
      */
     private void insertData(){
-        Map<String, String> data = new HashMap<>();
-        data.put("1", "插入1");
-        data.put("2", "插入2");
-        data.put("3", "插入3");
-        data.put("4", "插入4");
-        data.put("5", "插入5");
-        data.put("6", "插入6");
-        data.put("7", "插入7");
+        List<String> data = new ArrayList<>();
+        data.add("插入1");
+        data.add("插入2");
+        data.add("插入3");
+        data.add("插入4");
+        data.add("插入5");
+        data.add("插入6");
+        data.add("插入7");
         contentList.add(5,data);
-
     }
 
     /**

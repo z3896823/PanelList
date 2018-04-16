@@ -34,8 +34,8 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
-        pl_root = (PanelListLayout) findViewById(R.id.id_pl_root);
-        lv_content = (ListView) findViewById(R.id.id_lv_content);
+        pl_root = findViewById(R.id.id_pl_root);
+        lv_content =  findViewById(R.id.id_lv_content);
         initRoomData();
 
         adapter = new RoomPanelListAdapter(this, pl_root, lv_content, roomList, R.layout.item_room);

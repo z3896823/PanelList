@@ -23,6 +23,7 @@ Don`t forget to star if it helps you. ：）
 - v1.1.1.1 (20170812) — add an API to set initial position
 - v1.2.0 (20170911) — Big change! Now you can set everything in your activity and call setAdapter() to finish your job. And also some bug fixed.
 - v1.2.3(20171112) — Some bug fixed
+- v1.3.0(20180416)— simplified normal use, some bug fixed
 
 ## Installing
 Step 1. add this to your project build.gradle
@@ -65,65 +66,7 @@ dependencies {
 </sysu.zyb.panellistlibrary.PanelListLayout>
 ```
 
-```xml
-<!--item view.use CheckableLinearLayout if you want multiselection.-->
-<!--even if you don`t, I still suggest you use this viewgroup-->
-<sysu.zyb.panellistlibrary.CheckableLinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:gravity="center">
-
-  <!--build your item views here-->
-</sysu.zyb.panellistlibrary.CheckableLinearLayout>
-```
-
-### 2、adapter
-
-```java
-/**
- * easier than you can imagine
- */
-public class MyPanelListAdapter extends AbstractPanelListAdapter {
-
-    private Context context;
-    private ListView lv_content;
-    private int contentResourceId;
-    private List<Map<String, String>> contentList = new ArrayList<>();
-
-    /**
-     * constructor
-     */
-    public MyPanelListAdapter(Context context, PanelListLayout pl_root, ListView lv_content,
-                              int contentResourceId, List<Map<String,String>> contentList) {
-        super(context, pl_root, lv_content);
-        this.context = context;
-        this.lv_content = lv_content;
-        this.contentResourceId = contentResourceId;
-        this.contentList = contentList;
-    }
-
-    /**
-     * return the content adapter
-     */
-    @Override
-    protected BaseAdapter getContentAdapter() {
-        return new ContentAdapter(context,contentResourceId,contentList);
-    }
-
-
-    /**
-     * content adapter, nothing different from a listview adapter
-     */
-    private class ContentAdapter extends ArrayAdapter {
-		//your content adapter
-    }
-}
-```
-
-### 3、activity
+### 2、activity
 
 ```java
 public class MainActivity extends AppCompatActivity {
@@ -139,12 +82,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initView();
-        initContentDataList();
 
-        adapter = new MyPanelListAdapter(this, pl_root, lv_content, R.layout.item_content, contentList);
+        initRowDataList();
+        initContentDataList();
+        initItemWidthList();
+
+        adapter = new AbstractPanelListAdapter(this,pl_root,lv_content) {
+            @Override
+            protected BaseAdapter getContentAdapter() {
+                return null;
+            }
+        };
         adapter.setInitPosition(10);
         adapter.setSwipeRefreshEnabled(true);
-        //set anything you want here, then call pl_root.setAdapter() to get everything done
+        adapter.setRowDataList(rowDataList);
+        adapter.setTitle("example");
+        adapter.setOnRefreshListener(new CustomRefreshListener());
+        adapter.setContentDataList(contentList);
+        adapter.setItemWidthList(itemWidthList);
+        adapter.setItemHeight(40);
         pl_root.setAdapter(adapter);
         // don`t forget to update column manually if you are using a 
         // custom column data instead of the default 1,2,3...

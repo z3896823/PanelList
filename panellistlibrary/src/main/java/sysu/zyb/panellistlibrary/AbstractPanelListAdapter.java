@@ -24,6 +24,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import sysu.zyb.panellistlibrary.defaultcontent.DefaultContentAdapter;
+
 import static android.view.View.SCROLLBAR_POSITION_LEFT;
 import static android.view.View.SCROLLBAR_POSITION_RIGHT;
 
@@ -103,6 +105,12 @@ public abstract class AbstractPanelListAdapter {
     private HorizontalScrollListener horizontalScrollListener = new HorizontalScrollListener();
     private VerticalScrollListener verticalScrollListener = new VerticalScrollListener();
 
+    /**
+     * 如果想使用默认的 contentAdapter，那么只需要传入要显示的数据，和每一行的每一个数据的宽度就可以了
+     */
+    private List<List<String>> contentDataList;
+    private List<Integer> itemWidthList;
+    private int itemHeight = 150;// 默认150px 的高度
 
     /**
      * constructor
@@ -115,7 +123,20 @@ public abstract class AbstractPanelListAdapter {
         this.lv_content = lv_content;
     }
 
+
     //region APIs
+
+    public void setItemHeight(int dp){
+        itemHeight = dp2px(dp);
+    }
+
+    public void setContentDataList(List<List<String>> contentDataList) {
+        this.contentDataList = contentDataList;
+    }
+
+    public void setItemWidthList(List<Integer> itemWidthList) {
+        this.itemWidthList = parseDpList2PxList(itemWidthList);
+    }
 
     /**
      * 设置表的标题
@@ -141,7 +162,7 @@ public abstract class AbstractPanelListAdapter {
      * @param titleWidth title width
      */
     public void setTitleWidth(int titleWidth) {
-        this.titleWidth = titleWidth;
+        this.titleWidth = dp2px(titleWidth);
     }
 
     /**
@@ -150,7 +171,7 @@ public abstract class AbstractPanelListAdapter {
      * @param titleHeight title height
      */
     public void setTitleHeight(int titleHeight) {
-        this.titleHeight = titleHeight;
+        this.titleHeight = dp2px(titleHeight);
     }
 
     /**
@@ -311,12 +332,8 @@ public abstract class AbstractPanelListAdapter {
 
         contentAdapter = getContentAdapter();
 
-        if (contentAdapter == null){
-            try {
-                throw new Exception("content adapter can NOT be null");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (contentAdapter == null) {
+            contentAdapter = new DefaultContentAdapter(context,R.layout.defaultcontentitem,contentDataList,itemWidthList,itemHeight,lv_content);
         }
 
         reorganizeViewGroup();
@@ -373,6 +390,7 @@ public abstract class AbstractPanelListAdapter {
 
         lv_content.setAdapter(contentAdapter);
         lv_content.setVerticalScrollBarEnabled(true);
+//        lv_content.setFastScrollEnabled(false);
 
         // clear root viewGroup
         pl_root.removeView(lv_content);
@@ -406,6 +424,7 @@ public abstract class AbstractPanelListAdapter {
 
         // 3. column （ListView --> PanelListLayout）
         lv_column = new ListView(context);
+//        lv_column.setFastScrollEnabled(false);
         lv_column.setBackgroundColor(Color.parseColor(columnColor));
         lv_column.setId(View.generateViewId());
         lv_column.setVerticalScrollBarEnabled(false);//去掉滚动条
@@ -450,10 +469,12 @@ public abstract class AbstractPanelListAdapter {
     }
 
     private void initColumnLayout() {
-        columnItemHeight = ll_contentItem.getHeight();
-        lv_column.setAdapter(getColumnAdapter());
-        if (columnDivider != null) {
-            lv_column.setDivider(columnDivider);
+        if (ll_contentItem != null) {
+            columnItemHeight = ll_contentItem.getHeight();
+            lv_column.setAdapter(getColumnAdapter());
+            if (columnDivider != null) {
+                lv_column.setDivider(columnDivider);
+            }
         }
     }
 
@@ -465,28 +486,38 @@ public abstract class AbstractPanelListAdapter {
      */
     private void initRowLayout() {
 
-        if (rowDataList == null) {
-            Log.e("PanelList", "custom Row data list is strongly recommended! Call setRowDataList(List<String> rowDataList) in your panel adapter");
+        Integer[] widthArray = new Integer[getRowDataList().size()];
+
+        if (ll_contentItem == null) {
+            for (int i = 0; i < widthArray.length; i++) {
+                widthArray[i] = 250;
+            }
+        } else {
+            for (int i = 0; i < widthArray.length; i++) {
+                widthArray[i] = ll_contentItem.getChildAt(i).getWidth();
+            }
         }
-        int rowCount = ll_contentItem.getChildCount();
 
-        List<String> rowDataList1 = getRowDataList(rowCount);
+        List<String> rowDataList1 = getRowDataList();
+        int rowCount = rowDataList1.size();
 
-        //分隔线的设置，如果content的item设置了分割线，那row使用相同的分割线，除非单独给row设置了分割线
         ll_row.setBackgroundColor(Color.parseColor(rowColor));
+        //分隔线的设置，如果content的item设置了分割线，那row使用相同的分割线，除非单独给row设置了分割线
         if (rowDivider == null) {
-            ll_row.setDividerDrawable(ll_contentItem.getDividerDrawable());
+            if (ll_contentItem != null) {
+                ll_row.setDividerDrawable(ll_contentItem.getDividerDrawable());
+                ll_row.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+            }
         } else {
             ll_row.setDividerDrawable(rowDivider);
         }
 
-        // 获得row一共有多少个item，然后使用循环往里面添加对应个数个TextView（简单粗暴）
+        // 横向表头每一个 item 的宽度都取决于 content 的 item 的宽度
         for (int i = 0; i < rowCount; i++) {
-            View contentItem = ll_contentItem.getChildAt(i);// 获得item的item，以便获取宽度
             TextView rowItem = new TextView(context);
             rowItem.setText(rowDataList1.get(i));//设置文字
             rowItem.getPaint().setFakeBoldText(true);
-            rowItem.setWidth(contentItem.getWidth());//设置宽度
+            rowItem.setWidth(widthArray[i]);//设置宽度
             rowItem.setHeight(titleHeight);//设置高度
             rowItem.setGravity(Gravity.CENTER);
             ll_row.addView(rowItem);
@@ -499,17 +530,17 @@ public abstract class AbstractPanelListAdapter {
      * 如果设置了自定义的表头内容，则直接返回引用
      * 如果用户没设置，则根据传进来的count数生成一个默认表头
      */
-    private List<String> getRowDataList(int count) {
+    private List<String> getRowDataList() {
         if (rowDataList == null) {
-            List<String> defaultRowDataList = new ArrayList<>();
-            for (int i = 0; i < count; i++) {
-                String s = "Row" + i;
-                defaultRowDataList.add(s);
+            try {
+                throw new Exception("you must set your column data list by calling setColumnDataList(List<String>)");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return defaultRowDataList;
-        } else {
-            return rowDataList;
         }
+
+        return rowDataList;
+
     }
 
     /**
@@ -524,11 +555,25 @@ public abstract class AbstractPanelListAdapter {
         if (columnDataList == null) {
             defaultColumn = true;
             columnDataList = new ArrayList<>();
-            for (int i = 1; i <= getContentAdapter().getCount(); i++) {
+            int contentDataCount = contentAdapter.getCount();
+            for (int i = 1; i <= contentDataCount; i++) {
                 columnDataList.add(String.valueOf(i));
             }
         }
         return columnDataList;
+    }
+
+    private int dp2px(int dp){
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
+    private List<Integer> parseDpList2PxList(List<Integer> itemWidthList){
+        List<Integer> itemWidthListInPx = new ArrayList<>();
+        for (int i = 0;i<itemWidthList.size();i++){
+            itemWidthListInPx.add(dp2px(itemWidthList.get(i)));
+        }
+         return itemWidthListInPx;
     }
 
     /**

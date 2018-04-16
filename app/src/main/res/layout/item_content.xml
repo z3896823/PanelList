@@ -5,7 +5,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:divider="@drawable/divider_content"
+    android:showDividers="middle">
 
     <TextView
         android:id="@+id/id_tv_01"
@@ -13,7 +15,7 @@
         android:padding="5dp"
         android:layout_height="30dp"
         android:gravity="center"
-        tools:text="01"/>
+        tools:text="01" />
 
     <TextView
         android:id="@+id/id_tv_02"

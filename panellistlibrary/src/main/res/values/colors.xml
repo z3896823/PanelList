@@ -7,4 +7,5 @@
     <color name="colorRow">#f9ba1d</color>
     <color name="black">#000000</color>
     <color name="colorDeselected">#fdfdfd</color>
+    <color name="colorSelected">#5cd25a</color>
 </resources>
