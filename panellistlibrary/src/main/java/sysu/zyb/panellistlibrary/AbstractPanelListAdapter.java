@@ -126,7 +126,7 @@ public abstract class AbstractPanelListAdapter {
 
     //region APIs
 
-    public void setItemHeight(int dp){
+    public void setItemHeight(int dp) {
         itemHeight = dp2px(dp);
     }
 
@@ -333,7 +333,8 @@ public abstract class AbstractPanelListAdapter {
         contentAdapter = getContentAdapter();
 
         if (contentAdapter == null) {
-            contentAdapter = new DefaultContentAdapter(context,R.layout.defaultcontentitem,contentDataList,itemWidthList,itemHeight,lv_content);
+            contentAdapter = new DefaultContentAdapter(context, R.layout.defaultcontentitem,
+                    contentDataList, itemWidthList, itemHeight, lv_content);
         }
 
         reorganizeViewGroup();
@@ -486,18 +487,6 @@ public abstract class AbstractPanelListAdapter {
      */
     private void initRowLayout() {
 
-        Integer[] widthArray = new Integer[getRowDataList().size()];
-
-        if (ll_contentItem == null) {
-            for (int i = 0; i < widthArray.length; i++) {
-                widthArray[i] = 250;
-            }
-        } else {
-            for (int i = 0; i < widthArray.length; i++) {
-                widthArray[i] = ll_contentItem.getChildAt(i).getWidth();
-            }
-        }
-
         List<String> rowDataList1 = getRowDataList();
         int rowCount = rowDataList1.size();
 
@@ -517,7 +506,7 @@ public abstract class AbstractPanelListAdapter {
             TextView rowItem = new TextView(context);
             rowItem.setText(rowDataList1.get(i));//设置文字
             rowItem.getPaint().setFakeBoldText(true);
-            rowItem.setWidth(widthArray[i]);//设置宽度
+            rowItem.setWidth(itemWidthList.get(i));//设置宽度
             rowItem.setHeight(titleHeight);//设置高度
             rowItem.setGravity(Gravity.CENTER);
             ll_row.addView(rowItem);
@@ -563,17 +552,18 @@ public abstract class AbstractPanelListAdapter {
         return columnDataList;
     }
 
-    private int dp2px(int dp){
+    private int dp2px(int dp) {
         float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
 
-    private List<Integer> parseDpList2PxList(List<Integer> itemWidthList){
+    private List<Integer> parseDpList2PxList(List<Integer> itemWidthList) {
         List<Integer> itemWidthListInPx = new ArrayList<>();
-        for (int i = 0;i<itemWidthList.size();i++){
+        for (int i = 0; i < itemWidthList.size(); i++) {
             itemWidthListInPx.add(dp2px(itemWidthList.get(i)));
         }
-         return itemWidthListInPx;
+        // todo 限制 itemWidthListInPx 最大只能有10个
+        return itemWidthListInPx;
     }
 
     /**

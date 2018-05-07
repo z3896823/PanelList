@@ -52,7 +52,16 @@ public class MainActivity extends AppCompatActivity {
         initContentDataList();
         initItemWidthList();
 
-        adapter = new AbstractPanelListAdapter(this,pl_root,lv_content) {
+        initAdapter();
+        pl_root.setAdapter(adapter);
+
+        // 注意：
+        // 如果你决定自己实现自己的Column，而不是使用默认的1，2，3。。。
+        // 请注意更新contentList时手动更新columnList
+    }
+
+    private void initAdapter(){
+        adapter = new AbstractPanelListAdapter(this, pl_root, lv_content) {
             @Override
             protected BaseAdapter getContentAdapter() {
                 return null;
@@ -60,17 +69,12 @@ public class MainActivity extends AppCompatActivity {
         };
         adapter.setInitPosition(10);
         adapter.setSwipeRefreshEnabled(true);
-        adapter.setRowDataList(rowDataList);
-        adapter.setTitle("example");
-        adapter.setOnRefreshListener(new CustomRefreshListener());
-        adapter.setContentDataList(contentList);
-        adapter.setItemWidthList(itemWidthList);
-        adapter.setItemHeight(40);
-        pl_root.setAdapter(adapter);
-
-        // 注意：
-        // 如果你决定自己实现自己的Column，而不是使用默认的1，2，3。。。
-        // 请注意更新contentList时手动更新columnList
+        adapter.setRowDataList(rowDataList);// must have
+        adapter.setTitle("example");// optional
+        adapter.setOnRefreshListener(new CustomRefreshListener());// optional
+        adapter.setContentDataList(contentList);// must have
+        adapter.setItemWidthList(itemWidthList);// must have
+        adapter.setItemHeight(40);// optional, dp
     }
 
     @Override
@@ -81,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.id_menu_updateData:
                 changeContentDataList();
                 break;
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public class CustomRefreshListener implements SwipeRefreshLayout.OnRefreshListener{
+    public class CustomRefreshListener implements SwipeRefreshLayout.OnRefreshListener {
         @Override
         public void onRefresh() {
             // you can do sth here, for example: make a toast:
@@ -130,11 +134,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** 生成一份横向表头的内容
+    /**
+     * 生成一份横向表头的内容
      *
      * @return List<String>
      */
-    private void initRowDataList(){
+    private void initRowDataList() {
         rowDataList.add("第一列");
         rowDataList.add("第二列");
         rowDataList.add("第三列");
@@ -164,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 初始化 content 部分每一个 item 的每个数据的宽度
      */
-    private void initItemWidthList(){
-        itemWidthList.add(100);
-        itemWidthList.add(100);
+    private void initItemWidthList() {
+        itemWidthList.add(50);
+        itemWidthList.add(200);
         itemWidthList.add(100);
         itemWidthList.add(100);
         itemWidthList.add(100);
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 插入一个数据
      */
-    private void insertData(){
+    private void insertData() {
         List<String> data = new ArrayList<>();
         data.add("插入1");
         data.add("插入2");
@@ -204,13 +209,13 @@ public class MainActivity extends AppCompatActivity {
         data.add("插入5");
         data.add("插入6");
         data.add("插入7");
-        contentList.add(5,data);
+        contentList.add(5, data);
     }
 
     /**
      * 删除一个数据
      */
-    private void removeData(){
+    private void removeData() {
         contentList.remove(10);
     }
 
@@ -290,6 +295,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     Toast.makeText(MainActivity.this, "你选中的position有：" + checkedItemString, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
                     break;
             }
             return true;

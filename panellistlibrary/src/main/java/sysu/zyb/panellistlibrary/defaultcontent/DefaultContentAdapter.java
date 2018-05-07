@@ -3,6 +3,7 @@ package sysu.zyb.panellistlibrary.defaultcontent;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,13 @@ public class DefaultContentAdapter extends ArrayAdapter<List<String>> {
         this.itemWidthList = itemWidthList;
         this.lv_content = lv_content;
         this.itemHeight = itemHeight;
+    }
+
+    @Override
+    public int getCount() {
+        int count = super.getCount();
+        Log.d("ybz", "getCount: "+count);
+        return count;
     }
 
     @NonNull
