@@ -487,6 +487,26 @@ public abstract class AbstractPanelListAdapter {
      */
     private void initRowLayout() {
 
+        Integer[] widthArray = new Integer[getRowDataList().size()];
+
+        if (ll_contentItem == null) {
+            if (itemWidthList != null){
+                for (int i = 0; i < widthArray.length; i++) {
+                    widthArray[i] = itemWidthList.get(i);
+                }
+            } else {
+                try {
+                    throw new Exception("how can I set the row width if you don`t give me any reference");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            for (int i = 0; i < widthArray.length; i++) {
+                widthArray[i] = ll_contentItem.getChildAt(i).getWidth();
+            }
+        }
+
         List<String> rowDataList1 = getRowDataList();
         int rowCount = rowDataList1.size();
 
@@ -506,7 +526,7 @@ public abstract class AbstractPanelListAdapter {
             TextView rowItem = new TextView(context);
             rowItem.setText(rowDataList1.get(i));//设置文字
             rowItem.getPaint().setFakeBoldText(true);
-            rowItem.setWidth(itemWidthList.get(i));//设置宽度
+            rowItem.setWidth(widthArray[i]);//设置宽度
             rowItem.setHeight(titleHeight);//设置高度
             rowItem.setGravity(Gravity.CENTER);
             ll_row.addView(rowItem);
