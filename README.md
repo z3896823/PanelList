@@ -26,6 +26,9 @@ Don`t forget to star if it helps you. ：）
 - v1.3.0(20180416)— simplified normal use, some bug fixed
 
 ## Installing
+
+Something went wrong with jitpack, please download panlelistlibrary and add local dependency, I`m afraid I have to get this fixed later, sorry guys.
+
 Step 1. add this to your project build.gradle
 ```gradle
 allprojects {

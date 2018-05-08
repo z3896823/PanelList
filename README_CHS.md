@@ -62,6 +62,8 @@ PanelList是一个二维表格，主要用于展示大量数据，如酒店订�
 
 # 导入
 
+jitpack 出了点问题，大家先下载 panellistlibrary 添加本地依赖吧，后面有空了再修复，抱歉。
+
 Step 1. 在project的build.gradle文件中添加
 ```gradle
 allprojects {
