@@ -1,0 +1,2 @@
+# Keep the generated Windows wrapper usable without CRLF diff noise.
+*.bat text eol=crlf

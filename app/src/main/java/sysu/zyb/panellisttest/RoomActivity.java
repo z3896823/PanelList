@@ -1,8 +1,7 @@
 package sysu.zyb.panellisttest;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import sysu.zyb.panellistlibrary.PanelListLayout;
  * </pre>
  */
 
-public class RoomActivity extends AppCompatActivity {
+public class RoomActivity extends DemoActivity {
 
     private static final String TAG = "ybz";
 

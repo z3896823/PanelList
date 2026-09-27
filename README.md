@@ -1,3 +1,5 @@
+> The local build now uses JDK 17 / AGP 8.13.2 / Gradle 8.13. See [build and run instructions](docs/BUILDING.md). Historical integration examples below are retained for reference.
+
 # PanelList
 
 PanelList is a simple library for displaying data. It makes it possible to display massive data on a limited screen, just like what you see in Microsoft Excel. 
