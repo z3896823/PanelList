@@ -1,8 +1,7 @@
 package sysu.zyb.panellisttest;
 
 import android.content.Intent;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -28,7 +27,7 @@ import sysu.zyb.panellistlibrary.PanelListLayout;
 /**
  * @author zyb
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends DemoActivity {
 
     private PanelListLayout pl_root;
     private ListView lv_content;
@@ -85,22 +84,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.id_menu_updateData:
-                changeContentDataList();
-                break;
-            case R.id.id_menu_insert:
-                insertData();
-                break;
-            case R.id.id_menu_delete:
-                removeData();
-                break;
-            case R.id.id_menu_next:
-                Intent intent = new Intent(MainActivity.this, RoomActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                break;
+        if (item.getItemId() == R.id.id_menu_updateData) {
+            changeContentDataList();
+        } else if (item.getItemId() == R.id.id_menu_insert) {
+            insertData();
+        } else if (item.getItemId() == R.id.id_menu_delete) {
+            removeData();
+        } else if (item.getItemId() == R.id.id_menu_next) {
+            Intent intent = new Intent(MainActivity.this, RoomActivity.class);
+            startActivity(intent);
         }
         adapter.notifyDataSetChanged();
         return true;
@@ -269,35 +261,30 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.id_menu_selectAll:
-                    for (int i = 0; i < lv_content.getAdapter().getCount(); i++) {
-                        lv_content.setItemChecked(i, true);
-                    }
-                    tv_selectedCount.setText(String.valueOf(lv_content.getAdapter().getCount()));
-                    break;
-                case R.id.id_menu_draw:
-                    //draw
-                    SparseBooleanArray booleanArray = lv_content.getCheckedItemPositions();
-                    Log.d("ybz", booleanArray.toString());
+            if (item.getItemId() == R.id.id_menu_selectAll) {
+                for (int i = 0; i < lv_content.getAdapter().getCount(); i++) {
+                    lv_content.setItemChecked(i, true);
+                }
+                tv_selectedCount.setText(String.valueOf(lv_content.getAdapter().getCount()));
+            } else if (item.getItemId() == R.id.id_menu_draw) {
+                //draw
+                SparseBooleanArray booleanArray = lv_content.getCheckedItemPositions();
+                Log.d("ybz", booleanArray.toString());
 
-                    List<Integer> checkedItemPositionList = new ArrayList<>();
-                    for (int i = 0; i < contentList.size(); i++) {
-                        if (lv_content.isItemChecked(i)) {
-                            checkedItemPositionList.add(i);
-                            Log.d("ybz", "被选中的item： " + i);
-                        }
+                List<Integer> checkedItemPositionList = new ArrayList<>();
+                for (int i = 0; i < contentList.size(); i++) {
+                    if (lv_content.isItemChecked(i)) {
+                        checkedItemPositionList.add(i);
+                        Log.d("ybz", "被选中的item： " + i);
                     }
+                }
 
-                    StringBuilder checkedItemString = new StringBuilder();
-                    for (int i = 0; i < checkedItemPositionList.size(); i++) {
-                        checkedItemString.append(checkedItemPositionList.get(i) + ",");
-                    }
+                StringBuilder checkedItemString = new StringBuilder();
+                for (int i = 0; i < checkedItemPositionList.size(); i++) {
+                    checkedItemString.append(checkedItemPositionList.get(i) + ",");
+                }
 
-                    Toast.makeText(MainActivity.this, "你选中的position有：" + checkedItemString, Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
+                Toast.makeText(MainActivity.this, "你选中的position有：" + checkedItemString, Toast.LENGTH_SHORT).show();
             }
             return true;
         }

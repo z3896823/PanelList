@@ -7,3 +7,6 @@
 /build
 /captures
 .externalNativeBuild
+
+# Local SDK/build verification logs and screenshots
+/.local/

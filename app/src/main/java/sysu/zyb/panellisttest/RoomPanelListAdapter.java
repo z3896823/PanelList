@@ -1,9 +1,9 @@
 package sysu.zyb.panellisttest;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -172,36 +172,20 @@ public class RoomPanelListAdapter extends AbstractPanelListAdapter {
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
-                case R.id.id_tv_01:
-                    Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周一的入住详情", Toast.LENGTH_SHORT).show();
-
-                    break;
-                case R.id.id_tv_02:
-                    Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周二的入住详情", Toast.LENGTH_SHORT).show();
-
-                    break;
-                case R.id.id_tv_03:
-                    Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周三的入住详情", Toast.LENGTH_SHORT).show();
-
-                    break;
-                case R.id.id_tv_04:
-                    Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周四的入住详情", Toast.LENGTH_SHORT).show();
-
-                    break;
-                case R.id.id_tv_05:
-                    Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周五的入住详情", Toast.LENGTH_SHORT).show();
-
-                    break;
-                case R.id.id_tv_06:
-                    Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周六的入住详情", Toast.LENGTH_SHORT).show();
-
-                    break;
-                case R.id.id_tv_07:
-                    Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周日的入住详情", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
+            if (v.getId() == R.id.id_tv_01) {
+                Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周一的入住详情", Toast.LENGTH_SHORT).show();
+            } else if (v.getId() == R.id.id_tv_02) {
+                Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周二的入住详情", Toast.LENGTH_SHORT).show();
+            } else if (v.getId() == R.id.id_tv_03) {
+                Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周三的入住详情", Toast.LENGTH_SHORT).show();
+            } else if (v.getId() == R.id.id_tv_04) {
+                Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周四的入住详情", Toast.LENGTH_SHORT).show();
+            } else if (v.getId() == R.id.id_tv_05) {
+                Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周五的入住详情", Toast.LENGTH_SHORT).show();
+            } else if (v.getId() == R.id.id_tv_06) {
+                Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周六的入住详情", Toast.LENGTH_SHORT).show();
+            } else if (v.getId() == R.id.id_tv_07) {
+                Toast.makeText(context, roomList.get(position).getRoomNo()+"房间周日的入住详情", Toast.LENGTH_SHORT).show();
             }
         }
     }
